@@ -3,7 +3,8 @@ import org.lwjgl.input.*;
 
 import latmod.core.rendering.*;
 import latmod.core.util.*;
-import latmod.ibt.blocks.Block;
+import latmod.ibt.blocks.*;
+import latmod.ibt.world.*;
 
 public class Main extends LMFrame
 {
@@ -11,8 +12,6 @@ public class Main extends LMFrame
 	public Main() { super(800, 600, 60); }
 	public String getTitle() { return "It's Better Together"; }
 	public static void main(String[] args) { inst = new Main(); }
-	
-	public World worldObj = null;
 	
 	public final double zoom = 32D;
 	public double camX, camY;
@@ -22,18 +21,15 @@ public class Main extends LMFrame
 		LatCore.setProjectName("ItsBetterTogether");
 		super.onLoaded();
 		
-		worldObj = new World((int)(width / zoom) + 5, (int)(height / zoom) + 5);
-		worldObj.postInit();
+		World.inst = new World();
+		WorldLoader.loadWorldFromStream(World.inst, WorldLoader.class.getResourceAsStream("/levels/bogz.json"));
 		
 		for(Block b : Block.addedBlocks)
 		b.reloadTextures();
-		
-		camX = 5.931D;
-		camY = 3.211D;
 	}
 	
 	public boolean isResizable()
-	{ return false; }
+	{ return true; }
 	
 	public void onRender()
 	{
@@ -42,20 +38,31 @@ public class Main extends LMFrame
 		
 		if(Mouse.isButtonDown(0))
 		{
-			camX += mouse.DX * 0.05D;
-			camY += mouse.DY * 0.05D;
+			camX += mouse.DX * 0.009D;
+			camY += mouse.DY * 0.009D;
 		}
 		else if(Mouse.isButtonDown(1))
 		{
 			camX = camY = 0D;
 		}
 		
-		Renderer.push();
-		Renderer.translate(camX * worldObj.width, camY * worldObj.height);
-		Renderer.scale(zoom, zoom, 1D);
-		
-		worldObj.onRender();
-		
-		Renderer.pop();
+		if(World.inst != null)
+		{
+			Renderer.push();
+			Renderer.translate(-(World.inst.playerSP.posX * zoom - width / 2D), -(World.inst.playerSP.posY * zoom - height / 2D));
+			Renderer.scale(zoom, zoom, 1D);
+			
+			World.inst.onRender();
+			
+			Renderer.pop();
+			
+			//World.inst.playerSP.onGuiRender();
+		}
+	}
+	
+	public void onFrameUpdate(Timer t)
+	{
+		if(World.inst != null)
+		World.inst.onUpdate(t);
 	}
 }

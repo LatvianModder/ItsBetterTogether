@@ -1,0 +1,19 @@
+{
+	"name": "Pavests",
+	"background" = "bg/metal.png",
+	"size": [ 23, 19 ],
+	"playerSP": [ 1, 1 ],
+	"playerMP": [ 4, 3 ],
+	
+	"blocks":
+	[
+		{
+			"id": "wall_stone",
+			"coords": [ 0, 0 ]
+		}
+	],
+	
+	"entities":
+	[
+	]
+}
