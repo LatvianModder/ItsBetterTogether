@@ -6,15 +6,14 @@ import latmod.ibt.entity.*;
 
 public class Block
 {
-	public final int blockID;
 	public final String blockName;
 	public Texture blockTexture;
 	public AABB renderBounds = null;
 	
-	public Block(int i, String s)
+	public Block(String s)
 	{
-		blockID = i;
 		blockName = s;
+		addedBlocks.put(blockName, this);
 		renderBounds = new AABB.Corner(0D, 0D, 0D, 1D, 0D, 1D);
 		renderBounds.owner = this;
 	}
@@ -37,5 +36,11 @@ public class Block
 	public boolean isSolidFor(Entity e)
 	{ return true; }
 	
-	public static final Block wall_stone = new Block(1, "wall_stone");
+	//FIXME: IDs per world
+	public final int getID(World w)
+	{ return 0; }
+	
+	public static final FastMap<String, Block> addedBlocks = new FastMap<String, Block>();
+	
+	public static final Block wall_stone = new Block("wall_stone");
 }

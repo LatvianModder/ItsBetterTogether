@@ -1,7 +1,9 @@
 package latmod.ibt;
 import org.lwjgl.input.*;
+
 import latmod.core.rendering.*;
 import latmod.core.util.*;
+import latmod.ibt.blocks.Block;
 
 public class Main extends LMFrame
 {
@@ -12,7 +14,7 @@ public class Main extends LMFrame
 	
 	public World worldObj = null;
 	
-	public final double zoom = 64D;
+	public final double zoom = 32D;
 	public double camX, camY;
 	
 	public void onLoaded()
@@ -23,8 +25,11 @@ public class Main extends LMFrame
 		worldObj = new World((int)(width / zoom) + 5, (int)(height / zoom) + 5);
 		worldObj.postInit();
 		
-		camX = 5.931D * worldObj.width;
-		camY = 3.211D * worldObj.height;
+		for(Block b : Block.addedBlocks)
+		b.reloadTextures();
+		
+		camX = 5.931D;
+		camY = 3.211D;
 	}
 	
 	public boolean isResizable()
@@ -46,7 +51,7 @@ public class Main extends LMFrame
 		}
 		
 		Renderer.push();
-		Renderer.translate(camX - width / 2D, camY - height / 2D);
+		Renderer.translate(camX * worldObj.width, camY * worldObj.height);
 		Renderer.scale(zoom, zoom, 1D);
 		
 		worldObj.onRender();
