@@ -1,8 +1,8 @@
 package latmod.ibt.world;
-import java.util.Map;
-
+import java.util.*;
 import latmod.core.rendering.*;
 import latmod.core.util.*;
+import latmod.core.util.Timer;
 import latmod.ibt.blocks.*;
 import latmod.ibt.entity.*;
 import latmod.ibt.tiles.*;
@@ -23,6 +23,7 @@ public class World
 	public EntityPlayerMP playerMP;
 	
 	public int renderedBlocks = 0;
+	public Random rand = new Random();
 	
 	public World()
 	{
@@ -36,6 +37,8 @@ public class World
 		texBG = Renderer.getTexture(backgroundTex);
 		playerSP = new EntityPlayerSP(this);
 		playerMP = new EntityPlayerMP(this);
+		
+		registry.load();
 	}
 	
 	public void onUpdate(Timer t)

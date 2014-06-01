@@ -1,0 +1,35 @@
+{
+	"name": "Just a test level",
+	"background" = "bg/metal.png",
+	"size": [ 23, 19 ],
+	"playerSP": [ 1, 1 ],
+	"playerMP": [ 4, 3 ],
+	
+	"blocks":
+	[
+		{
+			"id": "wall_stone",
+			"coords": [ 0, 0 ]
+		},
+		
+		{
+			"id": "sign",
+			"coords": [ 3, 7 ],
+			"data": 
+			{
+				"text": "Hello world!",
+				"timer": 10,
+				"rotation": 45.0
+			}
+		},
+		
+		{
+			"id": "wall_stone",
+			"coords": [ 1, 0 ]
+		}
+	],
+	
+	"entities":
+	[
+	]
+}

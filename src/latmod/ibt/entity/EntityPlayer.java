@@ -1,15 +1,15 @@
 package latmod.ibt.entity;
+import latmod.core.nbt.NBTMap;
 import latmod.core.rendering.*;
 import latmod.ibt.world.*;
 
 public class EntityPlayer extends Entity
 {
-	public String username;
+	public String username = null;
 	
 	public EntityPlayer(World w)
 	{
 		super(w);
-		username = "LatvianModder";
 	}
 	
 	public void onRender()
@@ -26,4 +26,16 @@ public class EntityPlayer extends Entity
 	
 	public boolean isVisible()
 	{ return true; }
+	
+	public final void readFromNBT(NBTMap map)
+	{
+		super.readFromNBT(map);
+		username = map.getString("Name");
+	}
+	
+	public final void writeToNBT(NBTMap map)
+	{
+		super.writeToNBT(map);
+		map.setString("Name", username);
+	}
 }

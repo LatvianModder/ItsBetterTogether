@@ -1,4 +1,6 @@
 package latmod.ibt;
+import java.util.logging.Logger;
+
 import org.lwjgl.input.*;
 
 import latmod.core.rendering.*;
@@ -12,6 +14,7 @@ public class Main extends LMFrame
 	public Main() { super(800, 600, 60); }
 	public String getTitle() { return "It's Better Together"; }
 	public static void main(String[] args) { inst = new Main(); }
+	public static Logger logger = Logger.getLogger("Game");
 	
 	public final double zoom = 32D;
 	public double camX, camY;
@@ -20,9 +23,10 @@ public class Main extends LMFrame
 	{
 		LatCore.setProjectName("ItsBetterTogether");
 		super.onLoaded();
+		logger.setParent(LatCore.logger);
 		
 		World.inst = new World();
-		WorldLoader.loadWorldFromStream(World.inst, WorldLoader.class.getResourceAsStream("/levels/bogz.json"));
+		WorldLoader.loadWorldFromStream(World.inst, WorldLoader.class.getResourceAsStream("/levels/test.json"));
 		
 		for(Block b : Block.addedBlocks)
 		b.reloadTextures();

@@ -11,6 +11,7 @@ public class EntityPlayerSP extends EntityPlayer
 	public EntityPlayerSP(World w)
 	{
 		super(w);
+		username = "LatvianModder";
 	}
 	
 	public void onRender()
