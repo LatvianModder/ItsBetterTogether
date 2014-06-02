@@ -24,7 +24,7 @@ public class EntityPlayerSP extends EntityPlayer
 	
 	public void onGuiRender()
 	{
-		Font.inst.drawShadedText(4, 4, "Testificate");
+		Font.inst.drawText(4, 4, worldObj.worldName);
 	}
 	
 	public void onUpdate(Timer t)

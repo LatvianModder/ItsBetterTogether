@@ -2,7 +2,6 @@ package latmod.ibt.blocks;
 import latmod.core.rendering.*;
 import latmod.core.util.*;
 import latmod.ibt.entity.*;
-import latmod.ibt.tiles.TileEntity;
 import latmod.ibt.world.*;
 
 public class Block
@@ -35,32 +34,26 @@ public class Block
 	{
 	}
 	
-	public void onEntityCollided(World w, int x, int y, Entity e, boolean side)
+	public void onEntityStandingOn(World w, int x, int y, Entity e)
 	{
 	}
 	
 	public void onCreated(World w, int x, int y)
 	{
-		if(hasTile)
-		{
-			TileEntity te = ((ITileBlock)this).createTile(w);
-			te.posX = x;
-		}
 	}
 	
 	public void onDestroyed(World w, int x, int y)
 	{
 	}
 	
-	public boolean isSolidFor(Entity e)
+	public boolean isSolidFor(World w, int x, int y, Entity e)
 	{ return true; }
-	
-	public final int getID(World w)
-	{ return w.registry.blocks.getOrCreateID(blockID); }
 	
 	// --  -- //
 	
 	public static final FastMap<String, Block> addedBlocks = new FastMap<String, Block>();
 	
+	public static final Block unknown = new Block("unknown");
 	public static final Block wall_stone = new Block("wall_stone");
+	public static final BlockDoors doors = new BlockDoors("doors");
 }

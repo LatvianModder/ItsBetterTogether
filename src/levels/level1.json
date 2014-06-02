@@ -1,0 +1,37 @@
+{
+	"name": "Just a test level",
+	"background" = "bg/metal.png",
+	"size": [ 29, 19 ],
+	"playerSP": "0094FF",
+	"playerMP": "FF0000",
+	
+	"blocks":
+	{
+		"808080":
+		{
+			id: "wall_stone"
+		},
+		
+		"FF6A00":
+		{
+			id: "doors",
+			data: 
+			{
+				freq: 0,
+				rotation: 0,
+				color: "FF6A00"
+			}
+		}
+		
+		"FFD800":
+		{
+			id: "doors",
+			data:
+			{
+				freq: 1,
+				rotation: 0,
+				color: "FFD800"
+			}
+		}
+	}
+}

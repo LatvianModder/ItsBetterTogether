@@ -1,6 +1,13 @@
 package latmod.ibt.world;
+import java.awt.image.BufferedImage;
 import java.io.*;
-import latmod.core.util.LatCore;
+import java.util.*;
+
+import javax.imageio.ImageIO;
+
+import latmod.core.rendering.Color;
+import latmod.core.rendering.Renderer;
+import latmod.core.util.*;
 import latmod.ibt.blocks.Block;
 
 import com.google.gson.annotations.Expose;
@@ -10,12 +17,11 @@ public class WorldLoader
 	@Expose public String name;
 	@Expose public String background;
 	@Expose public int[] size;
-	@Expose public double[] playerSP;
-	@Expose public double[] playerMP;
-	@Expose public BlockLoader[] blocks;
-	@Expose public EntityLoader[] entities;
+	@Expose public String playerSP;
+	@Expose public String playerMP;
+	@Expose public Map<String, BlockLoader> blocks;
 	
-	public static void loadWorldFromJson(World w, String json)
+	public static void loadWorldFromJson(World w, String json, int[] pixels)
 	{
 		WorldLoader wl = LatCore.getJson(json, WorldLoader.class);
 		
@@ -26,30 +32,60 @@ public class WorldLoader
 		
 		w.postInit();
 		
-		w.playerSP.posX = wl.playerSP[0] + 0.5D;
-		w.playerSP.posY = wl.playerSP[1] + 0.5D;
+		int playerSPCoord = getCol(wl.playerSP);
+		int playerMPCoord = getCol(wl.playerMP);
 		
-		w.playerMP.posX = wl.playerMP[0] + 0.5D;
-		w.playerMP.posY = wl.playerMP[1] + 0.5D;
+		FastMap<Integer, BlockLoader> blocksCols = new FastMap<Integer, BlockLoader>();
 		
-		if(wl.blocks != null) for(BlockLoader b : wl.blocks)
 		{
-			try
+			Iterator<String> bKeys = wl.blocks.keySet().iterator();
+			Iterator<BlockLoader> bBlocks = wl.blocks.values().iterator();
+			
+			while(bKeys.hasNext())
 			{
-				w.setBlock(b.coords[0], b.coords[1], Block.addedBlocks.get(b.id), b.data);
+				String s = bKeys.next();
+				BlockLoader b = bBlocks.next();
+				
+				Integer i = getCol(s);
+				if(i != null) blocksCols.put(i, b);
 			}
-			catch(Exception e)
-			{ e.printStackTrace(); }
+		}
+		
+		for(int i = 0; i < w.width * w.height; i++)
+		{
+			if(pixels[i] != 0xFF000000)
+			{
+				int x = w.getX(i);
+				int y = w.getY(i);
+				
+				if(pixels[i] == playerSPCoord)
+					w.playerSP.setPos(x + 0.5D, y + 0.5D);
+				
+				else if(pixels[i] == playerMPCoord)
+					w.playerMP.setPos(x + 0.5D, y + 0.5D);
+				else
+				{
+					BlockLoader b = blocksCols.get(pixels[i]);
+					if(b != null) w.setBlock(x, y, Block.addedBlocks.get(b.id), b.data);
+					else w.setBlock(x, y, Block.unknown);
+				}
+			}
 		}
 	}
 	
-	public static void loadWorldFromStream(World w, InputStream is)
+	public static int getCol(String s)
+	{ return Color.get(Converter.decode('#' + s), 255).hex; }
+	
+	public static void loadWorldFromStream(World w, InputStream json, InputStream image)
 	{
 		try
 		{
-			byte[] b = new byte[is.available()];
-			is.read(b);
-			loadWorldFromJson(w, new String(b));
+			byte[] b = new byte[json.available()];
+			json.read(b);
+			
+			BufferedImage img = ImageIO.read(image);
+			int[] pixels = Renderer.getPixels(img);
+			loadWorldFromJson(w, new String(b), pixels);
 		}
 		catch(Exception e)
 		{ e.printStackTrace(); }

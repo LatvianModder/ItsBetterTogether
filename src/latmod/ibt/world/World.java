@@ -1,5 +1,6 @@
 package latmod.ibt.world;
 import java.util.*;
+
 import latmod.core.rendering.*;
 import latmod.core.util.*;
 import latmod.core.util.Timer;
@@ -14,26 +15,25 @@ public class World
 	public final IDReg registry;
 	public String worldName;
 	public int width = 1, height = 1;
-	
 	public String backgroundTex = "bg/metal.png";
 	private Texture texBG;
-	public Block[][] blocks;
-	public FastList<TileEntity> tileEntities;
+	public int renderedBlocks = 0;
+	
+	public FastMap<Integer, Block> blocks;
+	public FastMap<Integer, TileEntity> tiles;
 	public EntityPlayerSP playerSP;
 	public EntityPlayerMP playerMP;
-	
-	public int renderedBlocks = 0;
 	public Random rand = new Random();
-	
+
 	public World()
 	{
 		registry = new IDReg(this);
-		tileEntities = new FastList<TileEntity>();
+		blocks = new FastMap<Integer, Block>();
+		tiles = new FastMap<Integer, TileEntity>();
 	}
 	
 	public void postInit()
 	{
-		blocks = new Block[width][height];
 		texBG = Renderer.getTexture(backgroundTex);
 		playerSP = new EntityPlayerSP(this);
 		playerMP = new EntityPlayerMP(this);
@@ -43,6 +43,9 @@ public class World
 	
 	public void onUpdate(Timer t)
 	{
+		for(TileEntity te : tiles)
+		te.onUpdate(t);
+		
 		playerSP.onUpdate(t);
 		playerMP.onUpdate(t);
 	}
@@ -56,16 +59,33 @@ public class World
 		
 		renderedBlocks = 0;
 		
-		for(int y = 0; y < height; y++)
-		for(int x = 0; x < width; x++)
+		for(int i = 0; i < blocks.size(); i++)
 		{
-			if(blocks[x][y] != null && blocks[x][y].isVisible(this, x, y))
-			{ blocks[x][y].onRender(this, x, y); renderedBlocks++; }
+			Integer c = blocks.keys.get(i);
+			Block b = blocks.values.get(i);
+			
+			if(b.isVisible(this, getX(c), getY(c)))
+			{
+				b.onRender(this, getX(c), getY(c));
+				renderedBlocks++;
+			}
 		}
+		
+		for(TileEntity te : tiles)
+		te.onRender();
 		
 		playerSP.onRender();
 		playerMP.onRender();
 	}
+	
+	public int getX(int index)
+	{ return index % width; }
+	
+	public int getY(int index)
+	{ return index / width; }
+	
+	public int getIndex(double x, double y)
+	{ return (int)x % width + (int)y * width; }
 	
 	public void read(DataIOStream dios) throws Exception
 	{
@@ -77,25 +97,62 @@ public class World
 		registry.write(dios);
 	}
 	
-	public Block getBlock(double bx, double by)
+	public Block getBlock(double x, double y)
+	{ return blocks.get(getIndex(x, y)); }
+	
+	public void setBlock(double x, double y, Block b, Map<String, Object> data)
 	{
-		int x = (int)bx;
-		int y = (int)by;
-		if(x < 0 || x >= width) return null;
-		if(y < 0 || y >= height) return null;
-		return blocks[x][y];
+		int ix = (int)x;
+		int iy = (int)y;
+		int index = getIndex(x, y);
+		
+		Block b0 = blocks.get(index);
+		
+		if(b0 != null)
+		{
+			b0.onDestroyed(this, ix, iy);
+			
+			if(b0.hasTile)
+			{
+				TileEntity te = tiles.get(index);
+				if(te != null) te.onDestroyed();
+				tiles.remove(index);
+			}
+			
+			blocks.remove(index);
+		}
+		
+		if(b != null)
+		{
+			blocks.put(index, b);
+			
+			if(b.hasTile)
+			{
+				TileEntity te = ((ITileBlock)b).createTile(this);
+				
+				if(te != null)
+				{
+					te.posX = ix;
+					te.posY = iy;
+					te.type = b;
+					tiles.put(index, te);
+					
+					te.onCreated();
+					if(data != null) te.onCustomData(data);
+					setTile(x, y, te);
+				}
+			}
+			
+			b.onCreated(this, ix, iy);
+		}
 	}
 	
-	public boolean setBlock(double bx, double by, Block b, Map<String, Object> data)
-	{
-		int x = (int)bx;
-		int y = (int)by;
-		if(x < 0 || x >= width) return false;
-		if(y < 0 || y >= height) return false;
-		blocks[x][y] = b;
-		return true;
-	}
+	public void setBlock(double x, double y, Block b)
+	{ setBlock(x, y, b, null); }
 	
-	public boolean setBlock(double bx, double by, Block b)
-	{ return setBlock(bx, by, b, null); }
+	public TileEntity getTile(double x, double y)
+	{ return tiles.get(getIndex(x, y)); }
+	
+	public void setTile(double x, double y, TileEntity te)
+	{ tiles.put(getIndex(x, y), te); }
 }

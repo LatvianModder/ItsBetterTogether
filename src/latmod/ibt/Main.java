@@ -3,12 +3,13 @@ import java.util.logging.Logger;
 
 import org.lwjgl.input.*;
 
+import latmod.core.input.IMouseListener;
 import latmod.core.rendering.*;
 import latmod.core.util.*;
 import latmod.ibt.blocks.*;
 import latmod.ibt.world.*;
 
-public class Main extends LMFrame
+public class Main extends LMFrame implements IMouseListener.Scrolled
 {
 	public static Main inst = null;
 	public Main() { super(800, 600, 60); }
@@ -16,7 +17,7 @@ public class Main extends LMFrame
 	public static void main(String[] args) { inst = new Main(); }
 	public static Logger logger = Logger.getLogger("Game");
 	
-	public final double zoom = 32D;
+	public double zoom = 64D;
 	public double camX, camY;
 	
 	public void onLoaded()
@@ -26,10 +27,12 @@ public class Main extends LMFrame
 		logger.setParent(LatCore.logger);
 		
 		World.inst = new World();
-		WorldLoader.loadWorldFromStream(World.inst, WorldLoader.class.getResourceAsStream("/levels/test.json"));
+		WorldLoader.loadWorldFromStream(World.inst, WorldLoader.class.getResourceAsStream("/levels/level1.json"), WorldLoader.class.getResourceAsStream("/levels/level1.png"));
 		
 		for(Block b : Block.addedBlocks)
 		b.reloadTextures();
+		
+		logger.info("Color: " + Integer.toHexString(Color.MAGENTA.hex).toUpperCase());
 	}
 	
 	public boolean isResizable()
@@ -60,7 +63,7 @@ public class Main extends LMFrame
 			
 			Renderer.pop();
 			
-			//World.inst.playerSP.onGuiRender();
+			World.inst.playerSP.onGuiRender();
 		}
 	}
 	
@@ -68,5 +71,14 @@ public class Main extends LMFrame
 	{
 		if(World.inst != null)
 		World.inst.onUpdate(t);
+	}
+	
+	public void onMouseScrolled(LMMouse m)
+	{
+		if(m.scroll < 0) zoom *= 0.5D;
+		else zoom *= 2D;
+		
+		if(zoom > 256D) zoom = 256D;
+		if(zoom < 8D) zoom = 8D;
 	}
 }
