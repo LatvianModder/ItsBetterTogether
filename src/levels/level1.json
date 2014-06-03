@@ -12,6 +12,11 @@
 			id: "wall_stone"
 		},
 		
+		"FFFFB2":
+		{
+			id: "lamp"
+		},
+		
 		"FF6A00":
 		{
 			id: "doors",
@@ -21,7 +26,7 @@
 				rotation: 0,
 				color: "FF6A00"
 			}
-		}
+		},
 		
 		"FFD800":
 		{

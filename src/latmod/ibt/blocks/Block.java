@@ -9,12 +9,19 @@ public class Block
 	public final String blockID;
 	public Texture blockTexture;
 	public final boolean hasTile = (this instanceof ITileBlock);
+	private int lightValue = 0;
 	
 	public Block(String s)
 	{
 		blockID = s;
 		addedBlocks.put(blockID, this);
 	}
+	
+	public void setLightValue(float f)
+	{ lightValue = (int)(f * 15F); }
+	
+	public int getLightValue(World w, int x, int y)
+	{ return lightValue; }
 	
 	public void reloadTextures()
 	{
@@ -55,5 +62,6 @@ public class Block
 	
 	public static final Block unknown = new Block("unknown");
 	public static final Block wall_stone = new Block("wall_stone");
-	public static final BlockDoors doors = new BlockDoors("doors");
+	public static final Block doors = new BlockDoors("doors");
+	public static final Block lamp = new BlockLamp("lamp");
 }

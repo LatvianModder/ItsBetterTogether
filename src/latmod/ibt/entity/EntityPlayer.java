@@ -6,6 +6,7 @@ import latmod.ibt.world.*;
 public class EntityPlayer extends Entity
 {
 	public String username = null;
+	public boolean flashlight = false;
 	
 	public EntityPlayer(World w)
 	{
@@ -27,15 +28,23 @@ public class EntityPlayer extends Entity
 	public boolean isVisible()
 	{ return true; }
 	
+	public void move(double x, double y, double s)
+	{
+		super.move(x, y, s);
+		if(flashlight) worldObj.lightMapDirty = true;
+	}
+	
 	public final void readFromNBT(NBTMap map)
 	{
 		super.readFromNBT(map);
 		username = map.getString("Name");
+		flashlight = map.getBoolean("Flashlight");
 	}
 	
 	public final void writeToNBT(NBTMap map)
 	{
 		super.writeToNBT(map);
 		map.setString("Name", username);
+		map.setBoolean("Flashlight", flashlight);
 	}
 }

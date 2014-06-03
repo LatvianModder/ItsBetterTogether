@@ -24,16 +24,25 @@ public class EntityPlayerSP extends EntityPlayer
 	
 	public void onGuiRender()
 	{
-		Font.inst.drawText(4, 4, worldObj.worldName);
+		Renderer.enableTexture();
+		Font.inst.drawText(4, 4, "FPS: " + Main.inst.FPS + ", TPS: " + Main.inst.TPS);
+		Font.inst.drawText(4, 24, worldObj.worldName);
 	}
 	
 	public void onUpdate(Timer t)
 	{
 		double speed = 0.15D;
 		
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) speed *= 1.7D;
+		if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) speed *= 0.3D;
+		
 		if(Keyboard.isKeyDown(Keyboard.KEY_W)) move(0D, -1D, speed);
 		if(Keyboard.isKeyDown(Keyboard.KEY_S)) move(0D, 1D, speed);
 		if(Keyboard.isKeyDown(Keyboard.KEY_A)) move(-1D, 0D, speed);
 		if(Keyboard.isKeyDown(Keyboard.KEY_D)) move(1D, 0D, speed);
+		
+		boolean f = flashlight;
+		flashlight = Keyboard.isKeyDown(Keyboard.KEY_F);
+		if(flashlight != f) worldObj.lightMapDirty = true;
 	}
 }

@@ -3,13 +3,13 @@ import java.util.logging.Logger;
 
 import org.lwjgl.input.*;
 
-import latmod.core.input.IMouseListener;
+import latmod.core.input.*;
 import latmod.core.rendering.*;
 import latmod.core.util.*;
 import latmod.ibt.blocks.*;
 import latmod.ibt.world.*;
 
-public class Main extends LMFrame implements IMouseListener.Scrolled
+public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListener.Pressed
 {
 	public static Main inst = null;
 	public Main() { super(800, 600, 60); }
@@ -33,6 +33,9 @@ public class Main extends LMFrame implements IMouseListener.Scrolled
 		b.reloadTextures();
 		
 		logger.info("Color: " + Integer.toHexString(Color.MAGENTA.hex).toUpperCase());
+		
+		logger.info("Lan IP: " + LatCore.getHostAddress());
+		logger.info("External IP: " + LatCore.getExternalAddress());
 	}
 	
 	public boolean isResizable()
@@ -80,5 +83,12 @@ public class Main extends LMFrame implements IMouseListener.Scrolled
 		
 		if(zoom > 256D) zoom = 256D;
 		if(zoom < 8D) zoom = 8D;
+	}
+	
+	public Cancel onKeyPressed(int key, char keyChar)
+	{
+		if(World.inst != null && key == Keyboard.KEY_L)
+			World.inst.lightMapDirty = true;
+		return Cancel.FALSE;
 	}
 }

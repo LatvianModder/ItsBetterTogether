@@ -44,16 +44,13 @@ public class Entity
 	
 	public void move(double mx, double my, double speed)
 	{
-		/*
 		// X
 		
 		if(posX + mx * speed < 0D) mx = -posX / speed;
 		if(posX + mx * speed > worldObj.width) mx = (worldObj.width - posX) / speed;
 		
-		//Coords cx = Coords.getAABBInBox(worldObj.coordsList, this, mx * speed, 0D);
-		
-		Block bx = worldObj.getBlock(cx.posX, cx.posY);
-		if(bx == null || !bx.isSolidFor(worldObj, cx.posX, cx.posY, this))
+		Block bx = worldObj.getBlock(posX + mx * speed, posY);
+		if(bx == null || !bx.isSolidFor(worldObj, (int)(posX + mx * speed), (int)posY, this))
 		{
 			posX += mx * speed;
 			isDirty = true;
@@ -65,15 +62,13 @@ public class Entity
 		if(posY + my * speed >= worldObj.height) my = (worldObj.height - posY) / speed;
 		
 		//Coords cy = Coords.getAABBInBox(worldObj.coordsList, this, 0D, my * speed);
-		Coords cy = new Coords(worldObj, posX, posY + my * speed);
 		
-		Block by = worldObj.getBlock(cy.posX, cy.posY);
-		if(by == null || !by.isSolidFor(worldObj, cy.posX, cy.posY, this))
+		Block by = worldObj.getBlock(posX, posY + my * speed);
+		if(by == null || !by.isSolidFor(worldObj, (int)posX, (int)(posY + my * speed), this))
 		{
 			posY += my * speed;
 			isDirty = true;
 		}
-		*/
 	}
 	
 	public void readFromNBT(NBTMap map)
