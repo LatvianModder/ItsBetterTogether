@@ -3,6 +3,7 @@ import org.lwjgl.input.*;
 
 import latmod.core.rendering.*;
 import latmod.core.util.*;
+import latmod.ibt.GameOptions;
 import latmod.ibt.Main;
 import latmod.ibt.world.*;
 
@@ -11,7 +12,7 @@ public class EntityPlayerSP extends EntityPlayer
 	public EntityPlayerSP(World w)
 	{
 		super(w);
-		username = "LatvianModder";
+		username = GameOptions.props.username;
 	}
 	
 	public void onRender()
@@ -43,6 +44,6 @@ public class EntityPlayerSP extends EntityPlayer
 		
 		boolean f = flashlight;
 		flashlight = Keyboard.isKeyDown(Keyboard.KEY_F);
-		if(flashlight != f) worldObj.lightMapDirty = true;
+		if(flashlight != f) worldObj.renderer.lightMapDirty = true;
 	}
 }

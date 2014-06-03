@@ -7,18 +7,23 @@ import latmod.core.input.*;
 import latmod.core.rendering.*;
 import latmod.core.util.*;
 import latmod.ibt.blocks.*;
+import latmod.ibt.gui.*;
 import latmod.ibt.world.*;
 
 public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListener.Pressed
 {
+	public static FastMap<String, String> mainArgs;
 	public static Main inst = null;
 	public Main() { super(800, 600, 60); }
 	public String getTitle() { return "It's Better Together"; }
-	public static void main(String[] args) { inst = new Main(); }
+	public static void main(String[] args) { mainArgs = LatCore.createArgs(args); inst = new Main(); }
 	public static Logger logger = Logger.getLogger("Game");
 	
 	public double zoom = 64D;
 	public double camX, camY;
+	public boolean takingScreenshot = false;
+	
+	private GuiBasic openedGui = null;
 	
 	public void onLoaded()
 	{
@@ -26,20 +31,28 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 		super.onLoaded();
 		logger.setParent(LatCore.logger);
 		
-		World.inst = new World();
-		WorldLoader.loadWorldFromStream(World.inst, WorldLoader.class.getResourceAsStream("/levels/level1.json"), WorldLoader.class.getResourceAsStream("/levels/level1.png"));
+		GameOptions.loadOptions();
+		
+		openGui(new GuiStart());
+		
+		if(mainArgs.keys.contains("-openLevel"))
+		{
+			String json = mainArgs.get("-jsonLevel");
+			String png = mainArgs.get("-pngLevel");
+			
+			if(json != null && png != null)
+			{
+				World.inst = new World();
+				WorldLoader.loadWorldFromStream(World.inst, WorldLoader.class.getResourceAsStream(json), WorldLoader.class.getResourceAsStream(png));
+			}
+		}
 		
 		for(Block b : Block.addedBlocks)
 		b.reloadTextures();
 		
-		logger.info("Color: " + Integer.toHexString(Color.MAGENTA.hex).toUpperCase());
-		
 		logger.info("Lan IP: " + LatCore.getHostAddress());
 		logger.info("External IP: " + LatCore.getExternalAddress());
 	}
-	
-	public boolean isResizable()
-	{ return true; }
 	
 	public void onRender()
 	{
@@ -62,11 +75,19 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 			Renderer.translate(-(World.inst.playerSP.posX * zoom - width / 2D), -(World.inst.playerSP.posY * zoom - height / 2D));
 			Renderer.scale(zoom, zoom, 1D);
 			
-			World.inst.onRender();
+			World.inst.renderer.onRender();
 			
 			Renderer.pop();
 			
 			World.inst.playerSP.onGuiRender();
+		}
+		
+		openedGui.onRender();
+		
+		if(takingScreenshot)
+		{
+			Renderer.takeScreenshot();
+			takingScreenshot = false;
 		}
 	}
 	
@@ -76,6 +97,68 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 		World.inst.onUpdate(t);
 	}
 	
+	public Cancel onKeyPressed(int key, char keyChar)
+	{
+		if(key == Keyboard.KEY_ESCAPE)
+		{
+			if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+			destroy(); else openedGui.onEscPressed();
+			return Cancel.TRUE;
+		}
+		else if(key == GameOptions.KEY_SCREENSHOT.key)
+		{
+			takingScreenshot = true;
+			return Cancel.TRUE;
+		}
+		else if(key == GameOptions.KEY_FULLSCREEN.key)
+		{
+			//setFullscreen(!Display.isFullscreen());
+			return Cancel.TRUE;
+		}
+		else if(key == GameOptions.KEY_TEST.key)
+		{
+		}
+		
+		return Cancel.FALSE;
+	}
+	
+	public void openGui(GuiBasic g)
+	{
+		if(g == null) g = (World.inst != null ? new GuiIngame() : new GuiStart());
+		if(openedGui != null)
+		{
+			openedGui.onReplacedBy(g);
+			openedGui.onUnloaded();
+			openedGui.onDestroyed();
+			openedGui = null;
+		}
+		
+		openedGui = g;
+		onResized();
+		
+		Mouse.setGrabbed(g.allowPlayerInput());
+	}
+	
+	public void onResized()
+	{
+		super.onResized();
+		if(openedGui != null)
+		{
+			openedGui.width = width;
+			openedGui.height = height;
+			openedGui.onUnloaded();
+			openedGui.onLoaded();
+		}
+	}
+	
+	public GuiBasic getGui()
+	{ return openedGui; }
+	
+	public void onDestroyed()
+	{
+		super.onDestroyed();
+	}
+	
 	public void onMouseScrolled(LMMouse m)
 	{
 		if(m.scroll < 0) zoom *= 0.5D;
@@ -83,12 +166,5 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 		
 		if(zoom > 256D) zoom = 256D;
 		if(zoom < 8D) zoom = 8D;
-	}
-	
-	public Cancel onKeyPressed(int key, char keyChar)
-	{
-		if(World.inst != null && key == Keyboard.KEY_L)
-			World.inst.lightMapDirty = true;
-		return Cancel.FALSE;
 	}
 }

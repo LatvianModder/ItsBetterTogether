@@ -31,7 +31,7 @@ public class EntityPlayer extends Entity
 	public void move(double x, double y, double s)
 	{
 		super.move(x, y, s);
-		if(flashlight) worldObj.lightMapDirty = true;
+		if(flashlight) worldObj.renderer.lightMapDirty = true;
 	}
 	
 	public final void readFromNBT(NBTMap map)

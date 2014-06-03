@@ -1,23 +1,23 @@
 {
-	"name": "Just a test level",
-	"background" = "bg/metal.png",
-	"size": [ 29, 19 ],
-	"playerSP": "0094FF",
-	"playerMP": "FF0000",
+	name: "Just a test level",
+	background = "bg/metal.png",
+	size: [ 29, 19 ],
+	playerSP: "0094FF",
+	playerMP: "FF0000",
 	
-	"blocks":
+	blocks:
 	{
-		"808080":
+		808080:
 		{
 			id: "wall_stone"
 		},
 		
-		"FFFFB2":
+		FFFFB2:
 		{
 			id: "lamp"
 		},
 		
-		"FF6A00":
+		FF6A00:
 		{
 			id: "doors",
 			data: 
@@ -28,7 +28,7 @@
 			}
 		},
 		
-		"FFD800":
+		FFD800:
 		{
 			id: "doors",
 			data:
