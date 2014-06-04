@@ -1,4 +1,5 @@
 package latmod.ibt;
+import java.io.InputStream;
 import java.util.logging.Logger;
 
 import org.lwjgl.input.*;
@@ -42,8 +43,7 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 			
 			if(json != null && png != null)
 			{
-				World.inst = new World();
-				WorldLoader.loadWorldFromStream(World.inst, WorldLoader.class.getResourceAsStream(json), WorldLoader.class.getResourceAsStream(png));
+				openLevel(WorldLoader.class.getResourceAsStream(json), WorldLoader.class.getResourceAsStream(png));
 			}
 		}
 		
@@ -110,11 +110,6 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 			takingScreenshot = true;
 			return Cancel.TRUE;
 		}
-		else if(key == GameOptions.KEY_FULLSCREEN.key)
-		{
-			//setFullscreen(!Display.isFullscreen());
-			return Cancel.TRUE;
-		}
 		else if(key == GameOptions.KEY_TEST.key)
 		{
 		}
@@ -154,11 +149,6 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 	public GuiBasic getGui()
 	{ return openedGui; }
 	
-	public void onDestroyed()
-	{
-		super.onDestroyed();
-	}
-	
 	public void onMouseScrolled(LMMouse m)
 	{
 		if(m.scroll < 0) zoom *= 0.5D;
@@ -166,5 +156,17 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 		
 		if(zoom > 256D) zoom = 256D;
 		if(zoom < 8D) zoom = 8D;
+	}
+	
+	public void openLevel(InputStream json, InputStream png)
+	{
+		World.inst = new World();
+		WorldLoader.loadWorldFromStream(World.inst, json, png);
+	}
+	
+	public void openLevel(String json, int[] pixels)
+	{
+		World.inst = new World();
+		WorldLoader.loadWorldFromJson(World.inst, json, pixels);
 	}
 }
