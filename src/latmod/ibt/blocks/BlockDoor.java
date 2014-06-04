@@ -14,7 +14,7 @@ public class BlockDoor extends Block implements ITileBlock
 	{ return new TileDoor(w); }
 	
 	public boolean isSolidFor(World w, int x, int y, Entity e)
-	{ return ((TileDoor)w.getTile(x, y)).isOpen(); }
+	{ return !((TileDoor)w.getTile(x, y)).isOpen(); }
 	
 	public void registerTiles(IDReg reg)
 	{ reg.addTile(blockID, TileDoor.class); }

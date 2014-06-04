@@ -8,6 +8,16 @@
 	
 	blocks:
 	{
+		004A7F:
+		{
+			id: "playerSPEnd"
+		},
+		
+		7F0000:
+		{
+			id: "playerMPEnd"
+		},
+		
 		808080:
 		{
 			id: "wall_stone"
@@ -18,23 +28,23 @@
 			id: "lamp",
 			data:
 			{
-				block: "wall_stone_cracked",
-				lightValue: 4
-			}
-		},
-		
-		FF6A00:
-		{
-			id: "door",
-			data: 
-			{
-				freq: "0",
-				horizontal: false,
-				color: "FF6A00"
+				block: "wall_stone",
+				lightValue: 15
 			}
 		},
 		
 		FFD800:
+		{
+			id: "door",
+			data: 
+			{
+				freq: "yellow",
+				horizontal: false,
+				color: "004A7F"
+			}
+		},
+		
+		FF6A00:
 		{
 			id: "door",
 			data:

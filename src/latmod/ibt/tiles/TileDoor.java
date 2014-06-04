@@ -1,45 +1,48 @@
 package latmod.ibt.tiles;
 import latmod.core.nbt.*;
+import latmod.core.rendering.Color;
 import latmod.ibt.world.*;
 
 public class TileDoor extends TileEntity
 {
 	public String freq;
-	public boolean horizontal;
-	public int color;
+	public int rotation;
+	public Color color;
+	public int requredButtonCount;
 	
 	public TileDoor(World w)
 	{
 		super(w);
 	}
 	
-	public void onRender()
+	public void loadTile(ExtraData data)
 	{
+		freq = data.getS("freq", "def");
+		color = data.getC("color", Color.WHITE);
+		rotation = data.getN("rotation", 0).intValue();
+		requredButtonCount = data.getN("requredButtonCount", 1).intValue();
 	}
 	
 	public void readFromNBT(NBTMap map)
 	{
-		super.readFromNBT(map);
 		freq = map.getString("Freq");
-		horizontal  = map.getBoolean("Hor");
-		color = map.getInt("Col");
+		rotation = map.getByte("Rot");
+		color = Color.get(map.getInt("Col"));
+		requredButtonCount = map.getByte("BCount");
 	}
 	
 	public void writeToNBT(NBTMap map)
 	{
-		super.writeToNBT(map);
 		map.setString("Freq", freq);
-		map.setBoolean("Hor", horizontal);
-		map.setInt("Col", color);
+		map.setByte("Rot", rotation);
+		map.setInt("Col", color.hex);
+		map.setByte("BCount", requredButtonCount);
 	}
 	
-	public void onCustomData(NBTMap data)
+	public void onRender()
 	{
-		if(data.hasKey("freq")) freq = data.getString("freq");
-		if(data.hasKey("color")) color = WorldLoader.getCol(data.getString("color"));
-		if(data.hasKey("horizontal")) horizontal = data.getBoolean("horizontal");
 	}
-
+	
 	public boolean isOpen()
-	{ return false; }
+	{ return true; }
 }

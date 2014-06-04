@@ -64,6 +64,8 @@ public class Block
 	public static final FastMap<String, Block> addedBlocks = new FastMap<String, Block>();
 	
 	public static final Block unknown = new Block("unknown");
+	public static final Block playerSPEnd = new BlockPlayerEnd("playerSPEnd");
+	public static final Block playerMPEnd = new BlockPlayerEnd("playerMPEnd");
 	public static final Block wall_stone = new Block("wall_stone");
 	public static final Block wall_stone_bricks = new Block("wall_stone_bricks");
 	public static final Block wall_stone_cracked = new Block("wall_stone_cracked");

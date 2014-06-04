@@ -21,7 +21,6 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 	public static Logger logger = Logger.getLogger("Game");
 	
 	public double zoom = 64D;
-	public double camX, camY;
 	public boolean takingScreenshot = false;
 	
 	private GuiBasic openedGui = null;
@@ -55,16 +54,6 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 	{
 		Renderer.enter2D();
 		Renderer.disableTexture();
-		
-		if(Mouse.isButtonDown(0))
-		{
-			camX += mouse.DX * 0.009D;
-			camY += mouse.DY * 0.009D;
-		}
-		else if(Mouse.isButtonDown(1))
-		{
-			camX = camY = 0D;
-		}
 		
 		if(World.inst != null)
 		{

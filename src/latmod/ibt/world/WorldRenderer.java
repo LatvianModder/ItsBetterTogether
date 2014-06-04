@@ -72,13 +72,27 @@ public class WorldRenderer
 			}
 			else
 			{
+				boolean[] transMap = new boolean[lightMap.length];
+				
 				for(int i = 0; i < lightMap.length; i++)
 				{
 					lightMap[i] = 0;
+					transMap[i] = true;
 					
 					Block b = worldObj.blocks.get(i);
-					if(b != null) lightMap[i] = b.getLightValue(worldObj, worldObj.getX(i), worldObj.getY(i));
+					if(b != null)
+					{
+						int x = worldObj.getX(i);
+						int y = worldObj.getY(i);
+						
+						lightMap[i] = b.getLightValue(worldObj, x, y);
+						transMap[i] = true;//b.isTransparent(worldObj, x, y);
+					}
 				}
+				
+				// -- Custom Light Sources -- //
+				
+				//lightMap[worldObj.getIndex(worldObj.playerSP.posX, worldObj.playerSP.posY)] = 15;
 				
 				for(int j = 0; j < lightMap.length; j++)
 				for(int i = 0; i < lightMap.length; i++)
@@ -97,6 +111,7 @@ public class WorldRenderer
 					if(lLeft > val + 1) val = lLeft - 1;
 					if(lRight > val + 1) val = lRight - 1;
 					
+					if(!transMap[i]) val = 0;
 					if(val > 0) lightMap[i] = val;
 				}
 				

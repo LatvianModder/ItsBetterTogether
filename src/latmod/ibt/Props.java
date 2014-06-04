@@ -13,6 +13,6 @@ public class Props
 		if(username == null) username = "Player";
 		if(logCount == null) logCount = 3;
 		if(soundVolume == null) soundVolume = 1D;
-		if(smoothLighting == null) smoothLighting = true;
+		if(smoothLighting == null) smoothLighting = false;
 	}
 }

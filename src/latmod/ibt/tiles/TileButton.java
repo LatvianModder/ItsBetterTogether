@@ -1,11 +1,12 @@
 package latmod.ibt.tiles;
 import latmod.core.nbt.*;
+import latmod.core.rendering.Color;
 import latmod.ibt.world.*;
 
 public class TileButton extends TileEntity
 {
 	public String freq;
-	public int color;
+	public Color color;
 	
 	public TileButton(World w)
 	{
@@ -18,22 +19,20 @@ public class TileButton extends TileEntity
 	
 	public void readFromNBT(NBTMap map)
 	{
-		super.readFromNBT(map);
 		freq = map.getString("Freq");
-		color = map.getInt("Col");
+		color = Color.get(map.getInt("Col"));
 	}
 	
 	public void writeToNBT(NBTMap map)
 	{
-		super.writeToNBT(map);
 		map.setString("Freq", freq);
-		map.setInt("Col", color);
+		map.setInt("Col", color.hex);
 	}
 	
-	public void onCustomData(NBTMap data)
+	public void loadTile(ExtraData data)
 	{
-		if(data.hasKey("freq")) freq = data.getString("freq");
-		if(data.hasKey("color")) color = WorldLoader.getCol(data.getString("color"));
+		freq = data.getS("freq", "def");
+		color = data.getC("col", Color.WHITE);
 	}
 
 	public boolean isPressed()

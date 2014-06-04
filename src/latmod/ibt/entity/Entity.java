@@ -8,7 +8,7 @@ public class Entity
 {
 	public final World worldObj;
 	public double posX, posY;
-	public double sizeX, sizeY;
+	public double radius;
 	public double rotation = 0D;
 	public boolean isDirty = true;
 	public boolean isDead = false;
@@ -16,7 +16,7 @@ public class Entity
 	public Entity(World w)
 	{
 		worldObj = w;
-		sizeX = sizeY = 0.9D;
+		radius = 0.9D;
 	}
 	
 	public void onUpdate(Timer t)

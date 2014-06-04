@@ -1,11 +1,10 @@
 package latmod.ibt.tiles;
 import latmod.core.nbt.*;
 import latmod.core.util.*;
-import latmod.ibt.Main;
 import latmod.ibt.blocks.*;
 import latmod.ibt.world.*;
 
-public class TileEntity
+public abstract class TileEntity
 {
 	public final World worldObj;
 	public int posX, posY;
@@ -17,9 +16,9 @@ public class TileEntity
 		worldObj = w;
 	}
 	
-	public void onCreated()
-	{
-	}
+	public abstract void loadTile(ExtraData data);
+	public abstract void readFromNBT(NBTMap map);
+	public abstract void writeToNBT(NBTMap map);
 	
 	public void onDestroyed()
 	{
@@ -36,19 +35,18 @@ public class TileEntity
 	{
 	}
 	
-	public void readFromNBT(NBTMap map)
-	{
-	}
+	public Integer getCol(String s)
+	{ return WorldLoader.getCol(s); }
 	
-	public void writeToNBT(NBTMap map)
+	public Integer getSide(String s0)
 	{
-	}
-	
-	public void onCustomData(NBTMap data)
-	{
-		Main.logger.info("Received custom data for " + LatCore.classpath(getClass()));
+		String s = s0.trim().toLowerCase();
 		
-		for(NBTBase b : data.map.values)
-		Main.logger.info(b.name + " [ " + b.getClass().getSimpleName() + " ]: " + b.getData());
+		if(s.equals("up")) return 0;
+		if(s.equals("right")) return 1;
+		if(s.equals("down")) return 2;
+		if(s.equals("left")) return 3;
+		
+		return null;
 	}
 }

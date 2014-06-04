@@ -1,6 +1,5 @@
 package latmod.ibt.tiles;
 import latmod.core.nbt.*;
-import latmod.core.util.MathHelper;
 import latmod.ibt.blocks.*;
 import latmod.ibt.world.*;
 
@@ -16,17 +15,8 @@ public class TileLamp extends TileEntity
 		bgBlock = Block.wall_stone;
 	}
 	
-	private void defaults()
-	{
-		if(bgBlock == null)
-		bgBlock = Block.wall_stone;
-		
-		lightValue = MathHelper.limitInt(lightValue, 0, 15);
-	}
-	
 	public void onRender()
 	{
-		defaults();
 		bgBlock.onRender(worldObj, posX, posY);
 		Block.lamp.onRender(worldObj, posX, posY);
 	}
@@ -40,17 +30,14 @@ public class TileLamp extends TileEntity
 	
 	public void writeToNBT(NBTMap map)
 	{
-		defaults();
 		map.setByte("Light", lightValue);
 		map.setString("Block", bgBlock.blockID);
 	}
 	
-	public void onCustomData(NBTMap data)
+	public void loadTile(ExtraData data)
 	{
-		if(data.hasKey("block")) bgBlock = Block.addedBlocks.get(data.getString("block"));
-		if(data.hasKey("lightValue")) lightValue = (int)data.getDouble("lightValue");
-		
-		defaults();
+		bgBlock = Block.addedBlocks.get(data.getS("block", "wall_stone"));
+		lightValue = data.getN("lightValue", 15, 0, 15).intValue();
 		
 		worldObj.renderer.lightMapDirty = true;
 	}

@@ -18,9 +18,6 @@ public class EntityPlayerSP extends EntityPlayer
 	public void onRender()
 	{
 		super.onRender();
-		
-		Main.inst.camX = -posX * World.inst.width + Main.inst.width / 2D;
-		Main.inst.camY = -posY * World.inst.height + Main.inst.height / 2D;
 	}
 	
 	public void onGuiRender()
@@ -41,5 +38,7 @@ public class EntityPlayerSP extends EntityPlayer
 		if(Keyboard.isKeyDown(Keyboard.KEY_S)) move(0D, 1D, speed);
 		if(Keyboard.isKeyDown(Keyboard.KEY_A)) move(-1D, 0D, speed);
 		if(Keyboard.isKeyDown(Keyboard.KEY_D)) move(1D, 0D, speed);
+		
+		worldObj.renderer.lightMapDirty = true;
 	}
 }

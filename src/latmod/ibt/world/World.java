@@ -1,6 +1,6 @@
 package latmod.ibt.world;
 import java.util.*;
-import latmod.core.nbt.*;
+
 import latmod.core.util.*;
 import latmod.core.util.Timer;
 import latmod.ibt.blocks.*;
@@ -21,6 +21,8 @@ public class World
 	
 	public FastMap<Integer, Block> blocks;
 	public FastMap<Integer, TileEntity> tiles;
+	public FastList<CollisionBox> collisionBoxes;
+	
 	public EntityPlayerSP playerSP;
 	public EntityPlayerMP playerMP;
 	public Random rand = new Random();
@@ -33,6 +35,7 @@ public class World
 		
 		blocks = new FastMap<Integer, Block>();
 		tiles = new FastMap<Integer, TileEntity>();
+		collisionBoxes = new FastList<CollisionBox>();
 	}
 	
 	public void postInit()
@@ -46,6 +49,20 @@ public class World
 	
 	public void onUpdate(Timer t)
 	{
+		collisionBoxes.clear();
+		
+		for(int i = 0; i < blocks.size(); i++)
+		{
+			Integer c = blocks.keys.get(i);
+			Block b = blocks.values.get(i);
+			
+			int x = getX(c);
+			int y = getY(c);
+			
+			if(b.isSolidFor(this, x, y, playerSP))
+			collisionBoxes.add(new CollisionBox(x, y, x + 1D, y + 1D));
+		}
+		
 		for(TileEntity te : tiles)
 		te.onUpdate(t);
 		
@@ -75,7 +92,7 @@ public class World
 	public Block getBlock(double x, double y)
 	{ return blocks.get(getIndex(x, y)); }
 	
-	public void setBlock(double x, double y, Block b, NBTMap data)
+	public void setBlock(double x, double y, Block b, ExtraData data)
 	{
 		int ix = (int)x;
 		int iy = (int)y;
@@ -112,8 +129,7 @@ public class World
 					te.type = b;
 					tiles.put(index, te);
 					
-					te.onCreated();
-					if(data != null) te.onCustomData(data);
+					te.loadTile((data == null) ? new ExtraData() : data);
 					setTile(x, y, te);
 				}
 			}
@@ -130,4 +146,12 @@ public class World
 	
 	public void setTile(double x, double y, TileEntity te)
 	{ tiles.put(getIndex(x, y), te); }
+	
+	//TODO: Fixme
+	public FastList<Entity> getAllEntities(Entity exception, double x, double y, double w, double h)
+	{
+		FastList<Entity> list = new FastList<Entity>();
+		
+		return list;
+	}
 }
