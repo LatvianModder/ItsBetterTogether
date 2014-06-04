@@ -5,4 +5,5 @@ import latmod.ibt.world.*;
 public interface ITileBlock
 {
 	public TileEntity createTile(World w);
+	public void registerTiles(IDReg reg);
 }

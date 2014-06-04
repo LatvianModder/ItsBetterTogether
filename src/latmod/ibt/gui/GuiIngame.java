@@ -26,6 +26,6 @@ public class GuiIngame extends GuiBasic
 	
 	public void onEscPressed()
 	{
-		Main.inst.openGui(null);
+		Main.inst.openGui(new GuiPause());
 	}
 }

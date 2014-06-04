@@ -39,18 +39,19 @@ public class IDReg
 	
 	public void load()
 	{
-		// Register blocks //
+		// Register blocks & tiles //
 		
 		for(Block b : Block.addedBlocks)
+		{
 			blockIDMap.put(blocks.getOrCreateID(b.blockID), b);
+			
+			if(b instanceof ITileBlock)
+			((ITileBlock)b).registerTiles(this);
+		}
 		
 		// Register entities //
 		
 		// no entities yet
-		
-		// Register tiles //
-		
-		addTile("sign", TileDoors.class);
 		
 		// Print registred IDs //
 		

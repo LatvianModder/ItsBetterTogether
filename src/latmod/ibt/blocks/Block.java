@@ -56,12 +56,18 @@ public class Block
 	public boolean isSolidFor(World w, int x, int y, Entity e)
 	{ return true; }
 	
+	public boolean isTransparent(World w, int x, int y)
+	{ return !isSolidFor(w, x, y, null) ; }
+	
 	// --  -- //
 	
 	public static final FastMap<String, Block> addedBlocks = new FastMap<String, Block>();
 	
 	public static final Block unknown = new Block("unknown");
 	public static final Block wall_stone = new Block("wall_stone");
-	public static final Block doors = new BlockDoors("doors");
+	public static final Block wall_stone_bricks = new Block("wall_stone_bricks");
+	public static final Block wall_stone_cracked = new Block("wall_stone_cracked");
 	public static final Block lamp = new BlockLamp("lamp");
+	public static final Block door = new BlockDoor("door");
+	public static final Block button = new BlockButton("button");
 }

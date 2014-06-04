@@ -4,7 +4,7 @@ import latmod.ibt.Main;
 
 public abstract class GuiBasic extends Gui
 {
-	public float width, height;
+	public double width, height;
 	
 	public GuiBasic(Main i)
 	{
@@ -13,7 +13,10 @@ public abstract class GuiBasic extends Gui
 	
 	public void addButton(int id, String s, double x, double y, double w, double h)
 	{ addWidget(id, new Button(this, x, y, w, h, s)); }
-
+	
+	public void addCenterButton(int id, String s, double y, double w, double h)
+	{ addButton(id, s, (width - w) / 2D, y, w, h); }
+	
 	public void onEscPressed()
 	{
 		Main.inst.openGui(null);

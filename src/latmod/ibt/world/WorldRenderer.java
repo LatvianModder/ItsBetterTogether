@@ -1,6 +1,7 @@
 package latmod.ibt.world;
 import latmod.core.rendering.*;
 import latmod.core.util.MathHelper;
+import latmod.ibt.GameOptions;
 import latmod.ibt.blocks.Block;
 import latmod.ibt.tiles.TileEntity;
 
@@ -9,7 +10,6 @@ public class WorldRenderer
 	public World worldObj;
 	
 	private Texture texBG;
-	public int renderedBlocks = 0;
 	
 	public int[] lightMap;
 	public int lightMapListID = -1;
@@ -33,18 +33,13 @@ public class WorldRenderer
 		Renderer.setTexture(texBG);
 		Renderer.rect(0D, 0D, worldObj.width, worldObj.height, 0D, 0D, worldObj.width, worldObj.height);
 		
-		renderedBlocks = 0;
-		
 		for(int i = 0; i < worldObj.blocks.size(); i++)
 		{
 			Integer c = worldObj.blocks.keys.get(i);
 			Block b = worldObj.blocks.values.get(i);
 			
 			if(b.isVisible(worldObj, worldObj.getX(c), worldObj.getY(c)))
-			{
-				b.onRender(worldObj, worldObj.getX(c), worldObj.getY(c));
-				renderedBlocks++;
-			}
+			b.onRender(worldObj, worldObj.getX(c), worldObj.getY(c));
 		}
 		
 		for(TileEntity te : worldObj.tiles)
@@ -58,74 +53,76 @@ public class WorldRenderer
 	
 	public void renderLighting()
 	{
+		if(worldObj.extraArgs.keys.contains("brightLight")) return;
+		
 		Renderer.disableTexture();
 		
 		if(lightMapListID == -1)
 		lightMapListID = Renderer.createListID();
-		
-		boolean smoothLighting = true;
 		
 		if(lightMapDirty)
 		{
 			lightMapDirty = false;
 			Renderer.updateList(lightMapListID);
 			
-			for(int i = 0; i < lightMap.length; i++)
+			if(worldObj.extraArgs.keys.contains("darkLight"))
 			{
-				lightMap[i] = 0;
-				
-				Block b = worldObj.blocks.get(i);
-				if(b != null) lightMap[i] = b.getLightValue(worldObj, worldObj.getX(i), worldObj.getY(i));
+				Color.BLACK.set(200);
+				Renderer.rect(0D, 0D, worldObj.width, worldObj.height);
 			}
-			
-			if(worldObj.playerSP.flashlight)
-			lightMap[worldObj.getIndex(worldObj.playerSP.posX + 0.5D, worldObj.playerSP.posY + 0.5D)] = 8;
-			
-			if(worldObj.playerMP.flashlight)
-			lightMap[worldObj.getIndex(worldObj.playerMP.posX + 0.5D, worldObj.playerMP.posY + 0.5D)] = 8;
-			
-			for(int j = 0; j < lightMap.length; j++)
-			for(int i = 0; i < lightMap.length; i++)
+			else
 			{
-				int x = worldObj.getX(i);
-				int y = worldObj.getY(i);
-				
-				int val = lightMap[i];
-				int lUp = getLightValue(x, y - 1);
-				int lDown = getLightValue(x, y + 1);
-				int lLeft = getLightValue(x - 1, y);
-				int lRight = getLightValue(x + 1, y);
-				
-				if(lUp > val + 1) val = lUp - 1;
-				if(lDown > val + 1) val = lDown - 1;
-				if(lLeft > val + 1) val = lLeft - 1;
-				if(lRight > val + 1) val = lRight - 1;
-				
-				if(val > 0) lightMap[i] = val;
-			}
-			
-			for(int i = 0; i < lightMap.length; i++)
-			{
-				int x = worldObj.getX(i);
-				int y = worldObj.getY(i);
-				
-				if(smoothLighting)
+				for(int i = 0; i < lightMap.length; i++)
 				{
-					Renderer.beginQuads();
-					Color.BLACK.set(calcSmoothLight(x, y));
-					Renderer.vertex(x, y);
-					Color.BLACK.set(calcSmoothLight(x + 1D, y));
-					Renderer.vertex(x + 1D, y);
-					Color.BLACK.set(calcSmoothLight(x + 1D, y + 1D));
-					Renderer.vertex(x + 1D, y + 1D);
-					Color.BLACK.set(calcSmoothLight(x, y + 1D));
-					Renderer.vertex(x, y + 1D);
-					Renderer.end();
+					lightMap[i] = 0;
+					
+					Block b = worldObj.blocks.get(i);
+					if(b != null) lightMap[i] = b.getLightValue(worldObj, worldObj.getX(i), worldObj.getY(i));
 				}
-				else
+				
+				for(int j = 0; j < lightMap.length; j++)
+				for(int i = 0; i < lightMap.length; i++)
 				{
-					Color.BLACK.set((int)MathHelper.map(lightMap[i], 0D, 15D, 200D, 0D));
-					Renderer.rect(x, y, 1D, 1D);
+					int x = worldObj.getX(i);
+					int y = worldObj.getY(i);
+					
+					int val = lightMap[i];
+					int lUp = getLightValue(x, y - 1);
+					int lDown = getLightValue(x, y + 1);
+					int lLeft = getLightValue(x - 1, y);
+					int lRight = getLightValue(x + 1, y);
+					
+					if(lUp > val + 1) val = lUp - 1;
+					if(lDown > val + 1) val = lDown - 1;
+					if(lLeft > val + 1) val = lLeft - 1;
+					if(lRight > val + 1) val = lRight - 1;
+					
+					if(val > 0) lightMap[i] = val;
+				}
+				
+				for(int i = 0; i < lightMap.length; i++)
+				{
+					int x = worldObj.getX(i);
+					int y = worldObj.getY(i);
+					
+					if(GameOptions.props.smoothLighting)
+					{
+						Renderer.beginQuads();
+						Color.BLACK.set(calcSmoothLight(x, y));
+						Renderer.vertex(x, y);
+						Color.BLACK.set(calcSmoothLight(x + 1D, y));
+						Renderer.vertex(x + 1D, y);
+						Color.BLACK.set(calcSmoothLight(x + 1D, y + 1D));
+						Renderer.vertex(x + 1D, y + 1D);
+						Color.BLACK.set(calcSmoothLight(x, y + 1D));
+						Renderer.vertex(x, y + 1D);
+						Renderer.end();
+					}
+					else
+					{
+						Color.BLACK.set((int)MathHelper.map(lightMap[i], 0D, 15D, 200D, 0D));
+						Renderer.rect(x, y, 1D, 1D);
+					}
 				}
 			}
 			

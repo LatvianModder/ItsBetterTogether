@@ -41,9 +41,5 @@ public class EntityPlayerSP extends EntityPlayer
 		if(Keyboard.isKeyDown(Keyboard.KEY_S)) move(0D, 1D, speed);
 		if(Keyboard.isKeyDown(Keyboard.KEY_A)) move(-1D, 0D, speed);
 		if(Keyboard.isKeyDown(Keyboard.KEY_D)) move(1D, 0D, speed);
-		
-		boolean f = flashlight;
-		flashlight = Keyboard.isKeyDown(Keyboard.KEY_F);
-		if(flashlight != f) worldObj.renderer.lightMapDirty = true;
 	}
 }

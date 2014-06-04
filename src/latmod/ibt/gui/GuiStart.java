@@ -11,10 +11,20 @@ public class GuiStart extends GuiBasic
 
 	public void loadWidgets()
 	{
-		addButton(1, "Added", 4, 4, 200, 40);
+		addCenterButton(1, "Host Game", height / 7D * 1D, 300, 60);
+		addCenterButton(2, "Join Game", height / 7D * 2D, 300, 60);
+		addCenterButton(3, "Options", height / 7D * 3D, 300, 60);
+		addCenterButton(4, "Help", height / 7D * 4D, 300, 60);
+		
+		addCenterButton(0, "Exit", height / 7D * 6D, 300, 60);
 	}
 
 	public void onWidgetEvent(int i, Widget w, String event, Object... args)
 	{
+		if(i == 0) Main.inst.destroy();
+		else if(i == 1) Main.inst.openGui(null);
+		else if(i == 2) Main.inst.openGui(null);
+		else if(i == 3) Main.inst.openGui(null);
+		else if(i == 4) Main.inst.openGui(null);
 	}
 }

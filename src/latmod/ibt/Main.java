@@ -49,9 +49,6 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 		
 		for(Block b : Block.addedBlocks)
 		b.reloadTextures();
-		
-		logger.info("Lan IP: " + LatCore.getHostAddress());
-		logger.info("External IP: " + LatCore.getExternalAddress());
 	}
 	
 	public void onRender()
@@ -162,11 +159,13 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 	{
 		World.inst = new World();
 		WorldLoader.loadWorldFromStream(World.inst, json, png);
+		openGui(null);
 	}
 	
 	public void openLevel(String json, int[] pixels)
 	{
 		World.inst = new World();
 		WorldLoader.loadWorldFromJson(World.inst, json, pixels);
+		openGui(null);
 	}
 }

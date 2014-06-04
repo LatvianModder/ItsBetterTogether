@@ -1,7 +1,5 @@
 package latmod.ibt.tiles;
-import java.util.Iterator;
-import java.util.Map;
-
+import latmod.core.nbt.*;
 import latmod.core.util.*;
 import latmod.ibt.Main;
 import latmod.ibt.blocks.*;
@@ -38,18 +36,19 @@ public class TileEntity
 	{
 	}
 	
-	public void onCustomData(Map<String, Object> data)
+	public void readFromNBT(NBTMap map)
 	{
-		Iterator<String> keys = data.keySet().iterator();
-		Iterator<Object> values = data.values().iterator();
-		
+	}
+	
+	public void writeToNBT(NBTMap map)
+	{
+	}
+	
+	public void onCustomData(NBTMap data)
+	{
 		Main.logger.info("Received custom data for " + LatCore.classpath(getClass()));
 		
-		while(keys.hasNext())
-		{
-			String k = keys.next();
-			Object v = values.next();
-			Main.logger.info(k + ": " + v + " [ " + v.getClass().getSimpleName() + " ]");
-		}
+		for(NBTBase b : data.map.values)
+		Main.logger.info(b.name + " [ " + b.getClass().getSimpleName() + " ]: " + b.getData());
 	}
 }

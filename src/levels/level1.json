@@ -4,6 +4,7 @@
 	size: [ 29, 19 ],
 	playerSP: "0094FF",
 	playerMP: "FF0000",
+	extraArgs: [ ],
 	
 	blocks:
 	{
@@ -14,27 +15,32 @@
 		
 		FFFFB2:
 		{
-			id: "lamp"
+			id: "lamp",
+			data:
+			{
+				block: "wall_stone_cracked",
+				lightValue: 4
+			}
 		},
 		
 		FF6A00:
 		{
-			id: "doors",
+			id: "door",
 			data: 
 			{
-				freq: 0,
-				rotation: 0,
+				freq: "0",
+				horizontal: false,
 				color: "FF6A00"
 			}
 		},
 		
 		FFD800:
 		{
-			id: "doors",
+			id: "door",
 			data:
 			{
-				freq: 1,
-				rotation: 0,
+				freq: "1",
+				horizontal: false,
 				color: "FFD800"
 			}
 		}
