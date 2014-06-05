@@ -74,6 +74,7 @@ public class Block
 	public static final Block lamp = new BlockLamp("lamp");
 	public static final Block door = new BlockDoor("door");
 	public static final Block button = new BlockButton("button");
+	public static final Block custom = new BlockCustom("custom");
 
 	public Integer getID(World w)
 	{ return w.registry.blocks.getID(blockID); }

@@ -1,0 +1,49 @@
+-- Type examples:
+String - testString: "Some text here"
+Integer - testInteger: 15
+Double - testDouble: 402.4029
+Boolean - testBoolean: false
+Block - testBlock: "wall_stone"
+Color - testColor: "FF0066"
+
+-- Block props example:
+
+{
+	id: "lamp",
+	data:
+	{
+		block: "wall_stone",
+		lightLevel: 6
+	}
+}
+
+-- Blocks and their properties:
+
+ unknown (shouldn't be spawned)
+
+ wall_stone
+
+ wall_stone_bricks
+
+ wall_stone_cracked
+
+ lamp
+- block (Block) - Block behind lamp
+- lightValue (Integer, 0 - 15) - Light brightness
+
+ door
+- freq (Integer) - Power network frequency
+- color (Color) - Color for door frame
+- requredButtonCount (Integer) - How many buttons are required to open doors
+- block (Block) - Block in background
+
+ button
+- freq (Integer) - Power network frequency
+- color (Color) - Color for button
+
+ custom
+- block (Block) - Texture
+- lightValue (Integer, 0 - 15) - Light brightness
+- color (Color) - Tint for block
+- rotation (Integer, 0 - 3) - Rotation
+- ghost (Boolean) - False for ghost block

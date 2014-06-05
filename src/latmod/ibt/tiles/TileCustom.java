@@ -33,9 +33,8 @@ public class TileCustom extends TileEntity
 	public void onRender()
 	{
 		color.set();
-		
-		texture.onRender(worldObj, posX, posY);
-		Block.lamp.onRender(worldObj, posX, posY);
+		Renderer.setTexture(texture.getTexture(worldObj, posX, posY));
+		Renderer.rect(posX, posY, 1D, 1D);
 	}
 	
 	public void readTile(DataIOStream dios) throws Exception

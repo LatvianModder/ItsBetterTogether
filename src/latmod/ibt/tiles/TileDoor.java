@@ -35,7 +35,7 @@ public class TileDoor extends TileEntity
 		freq = data.getN("freq", 0).intValue();
 		color = data.getC("color", Color.WHITE);
 		requredButtonCount = data.getN("requredButtonCount", 1).intValue();
-		texture = data.getBlock("texture", Block.wall_stone);
+		texture = data.getBlock("block", Block.wall_stone);
 		
 		if(worldObj.isSolidBlock(posX - 1D, posY) || worldObj.isSolidBlock(posX + 1D, posY))
 			horizontal = true;
