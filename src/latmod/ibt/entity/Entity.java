@@ -1,5 +1,4 @@
 package latmod.ibt.entity;
-import latmod.core.nbt.*;
 import latmod.core.util.*;
 import latmod.ibt.blocks.*;
 import latmod.ibt.world.*;
@@ -7,16 +6,18 @@ import latmod.ibt.world.*;
 public class Entity
 {
 	public final World worldObj;
-	public double posX, posY;
+	public double posX, posY, motX, motY;
 	public double radius;
 	public double rotation = 0D;
 	public boolean isDirty = true;
 	public boolean isDead = false;
+	public CollisionBox collisionBox;
 	
 	public Entity(World w)
 	{
 		worldObj = w;
-		radius = 0.9D;
+		radius = 0.4D;
+		collisionBox = new CollisionBox(0D, 0D, radius, radius);
 	}
 	
 	public void onUpdate(Timer t)
@@ -27,6 +28,9 @@ public class Entity
 	
 	public boolean isVisible()
 	{ return true; }
+	
+	public CollisionBox getCollisionBox()
+	{ return collisionBox; }
 	
 	public void setDead()
 	{ isDead = isDirty = true; }
@@ -42,45 +46,78 @@ public class Entity
 		isDirty = true;
 	}
 	
-	public void move(double mx, double my, double speed)
+	public void move(double x, double y, double s)
 	{
-		// X
-		
-		if(posX + mx * speed < 0D) mx = -posX / speed;
-		if(posX + mx * speed > worldObj.width) mx = (worldObj.width - posX) / speed;
-		
-		Block bx = worldObj.getBlock(posX + mx * speed, posY);
-		if(bx == null || !bx.isSolidFor(worldObj, (int)(posX + mx * speed), (int)posY, this))
-		{
-			posX += mx * speed;
-			isDirty = true;
-		}
-		
-		// Y
-		
-		if(posY + my * speed < 0D) my = -posY / speed;
-		if(posY + my * speed >= worldObj.height) my = (worldObj.height - posY) / speed;
-		
-		//Coords cy = Coords.getAABBInBox(worldObj.coordsList, this, 0D, my * speed);
-		
-		Block by = worldObj.getBlock(posX, posY + my * speed);
-		if(by == null || !by.isSolidFor(worldObj, (int)posX, (int)(posY + my * speed), this))
-		{
-			posY += my * speed;
-			isDirty = true;
-		}
+		double d = MathHelper.sqrt2sq(x, y);
+		motX += x / d * s;
+		motY += y / d * s;
 	}
 	
-	public void readFromNBT(NBTMap map)
+	public void updateCollisionBox()
+	{ collisionBox.set(posX - radius, posY - radius, posX + radius, posY + radius); }
+	
+	public void moveEntity()
 	{
-		double[] pos = map.getDoubleArray("PosRot");
-		posX = pos[0];
-		posY = pos[1];
-		rotation = pos[2];
+		updateCollisionBox();
+		
+		if(motX != 0D)
+		{
+			if(posX + motX < 0D) motX = -posX;
+			if(posX + motX >= worldObj.width) motX = worldObj.width - posX;
+			
+			FastList<CollisionBox> list = worldObj.getAllBlocks(collisionBox, motX, 0D);
+			
+			if(list.size() > 0) for(int i = 0; i < list.size(); i++)
+			{
+				CollisionBox cb = list.get(i);
+				if(worldObj.blocks.get(cb.getIndex(worldObj)).isSolidFor(worldObj, (int)cb.minX, (int)cb.minY, this))
+				motX = 0D; if(motX == 0D) continue;
+			}
+			
+			if(motX != 0D)
+			{
+				posX += motX;
+				motX = 0D;
+				isDirty = true;
+			}
+		}
+		
+		if(motY != 0D)
+		{
+			if(posY + motY < 0D) motY = -posY;
+			if(posY + motY >= worldObj.height) motY = worldObj.height - posY;
+			
+			FastList<CollisionBox> list = worldObj.getAllBlocks(collisionBox, 0D, motY);
+			
+			if(list.size() > 0) for(int i = 0; i < list.size(); i++)
+			{
+				CollisionBox cb = list.get(i);
+				if(worldObj.blocks.get(cb.getIndex(worldObj)).isSolidFor(worldObj, (int)cb.minX, (int)cb.minY, this))
+					motY = 0D; if(motY == 0D) continue;
+			}
+			
+			if(motY != 0D)
+			{
+				posY += motY;
+				motY = 0D;
+				isDirty = true;
+			}
+		}
+		
+		updateCollisionBox();
 	}
 	
-	public void writeToNBT(NBTMap map)
+	public void readEntity(DataIOStream dios) throws Exception
 	{
-		map.setDoubleArray("PosRot", posX, posY, rotation);
+		posX = dios.readDouble();
+		posY = dios.readDouble();
+		rotation = dios.readDouble();
+	}
+	
+	public void writeEntity(DataIOStream dios) throws Exception
+	{
+		dios.writeDouble(posX);
+		dios.writeDouble(posY);
+		dios.writeDouble(rotation);
 	}
 }

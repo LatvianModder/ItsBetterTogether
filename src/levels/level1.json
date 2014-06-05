@@ -1,23 +1,13 @@
 {
-	name: "Just a test level",
+	name: "Level 1",
 	background = "bg/metal.png",
 	size: [ 29, 19 ],
-	playerSP: "0094FF",
-	playerMP: "FF0000",
+	playerSP: [ "0094FF", "004A7F" ],
+	playerMP: [ "FF0000", "7F0000" ],
 	extraArgs: [ ],
 	
 	blocks:
 	{
-		004A7F:
-		{
-			id: "playerSPEnd"
-		},
-		
-		7F0000:
-		{
-			id: "playerMPEnd"
-		},
-		
 		808080:
 		{
 			id: "wall_stone"
@@ -38,9 +28,8 @@
 			id: "door",
 			data: 
 			{
-				freq: "yellow",
-				horizontal: false,
-				color: "004A7F"
+				freq: 0,
+				color: "FFD800"
 			}
 		},
 		
@@ -49,9 +38,28 @@
 			id: "door",
 			data:
 			{
-				freq: "1",
-				horizontal: false,
+				freq: 1,
+				color: "FF6A00"
+			}
+		},
+		
+		7F6A00:
+		{
+			id: "button",
+			data: 
+			{
+				freq: 0,
 				color: "FFD800"
+			}
+		},
+		
+		7F3300:
+		{
+			id: "button",
+			data:
+			{
+				freq: 1,
+				color: "FF6A00"
 			}
 		}
 	}

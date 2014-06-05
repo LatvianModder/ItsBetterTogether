@@ -17,8 +17,8 @@ public class WorldLoader
 	@Expose public String name;
 	@Expose public String background;
 	@Expose public int[] size;
-	@Expose public String playerSP;
-	@Expose public String playerMP;
+	@Expose public String[] playerSP;
+	@Expose public String[] playerMP;
 	@Expose public Map<String, BlockLoader> blocks;
 	@Expose public String[] extraArgs;
 	
@@ -39,10 +39,16 @@ public class WorldLoader
 		
 		w.postInit();
 		
-		Integer playerSPCoord = getCol(wl.playerSP);
-		Integer playerMPCoord = getCol(wl.playerMP);
+		Integer playerSPCoord = getCol(wl.playerSP[0]);
+		Integer playerMPCoord = getCol(wl.playerMP[0]);
 		
 		if(playerSPCoord == null || playerMPCoord == null) return false;
+		
+		Integer playerSPEnd = getCol(wl.playerSP[1]);
+		Integer playerMPEnd = getCol(wl.playerMP[1]);
+		
+		if(playerSPEnd == null) playerSPEnd = 0xFFFFFFFF;
+		if(playerMPEnd == null) playerMPEnd = 0xFFFFFFFF;
 		
 		FastMap<Integer, BlockLoader> blocksCols = new FastMap<Integer, BlockLoader>();
 		
@@ -70,6 +76,10 @@ public class WorldLoader
 				
 				else if(pixels[i] == playerMPCoord)
 					w.playerMP.setPos(x + 0.5D, y + 0.5D);
+				else if(pixels[i] == playerSPEnd)
+					w.endPointSP = i;
+				else if(pixels[i] == playerMPEnd)
+					w.endPointMP = i;
 				else
 				{
 					BlockLoader b = blocksCols.get(pixels[i]);

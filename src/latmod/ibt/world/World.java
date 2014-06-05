@@ -18,6 +18,7 @@ public class World
 	public int width = 1, height = 1;
 	public String backgroundTex = "bg/metal.png";
 	public FastMap<String, String> extraArgs;
+	public int endPointSP, endPointMP;
 	
 	public FastMap<Integer, Block> blocks;
 	public FastMap<Integer, TileEntity> tiles;
@@ -26,6 +27,9 @@ public class World
 	public EntityPlayerSP playerSP;
 	public EntityPlayerMP playerMP;
 	public Random rand = new Random();
+	
+	public int[] powerNetwork;
+	public FastList<IPowerProvider> powerProviders;
 
 	public World()
 	{
@@ -36,6 +40,9 @@ public class World
 		blocks = new FastMap<Integer, Block>();
 		tiles = new FastMap<Integer, TileEntity>();
 		collisionBoxes = new FastList<CollisionBox>();
+		
+		powerNetwork = new int[64];
+		powerProviders = new FastList<IPowerProvider>();
 	}
 	
 	public void postInit()
@@ -63,6 +70,10 @@ public class World
 			collisionBoxes.add(new CollisionBox(x, y, x + 1D, y + 1D));
 		}
 		
+		powerNetwork = new int[powerNetwork.length];
+		for(IPowerProvider i : powerProviders)
+		if(i.isProvidingPower()) powerNetwork[i.getFreq()]++;
+		
 		for(TileEntity te : tiles)
 		te.onUpdate(t);
 		
@@ -78,16 +89,6 @@ public class World
 	
 	public int getIndex(double x, double y)
 	{ return (int)x + (int)y * width; }
-	
-	public void read(DataIOStream dios) throws Exception
-	{
-		registry.read(dios);
-	}
-	
-	public void write(DataIOStream dios) throws Exception
-	{
-		registry.write(dios);
-	}
 	
 	public Block getBlock(double x, double y)
 	{ return blocks.get(getIndex(x, y)); }
@@ -107,7 +108,13 @@ public class World
 			if(b0.hasTile)
 			{
 				TileEntity te = tiles.get(index);
-				if(te != null) te.onDestroyed();
+				if(te != null)
+				{
+					te.onDestroyed();
+					
+					if(te instanceof IPowerProvider)
+					powerProviders.remove(te);
+				}
 				tiles.remove(index);
 			}
 			
@@ -131,6 +138,9 @@ public class World
 					
 					te.loadTile((data == null) ? new ExtraData() : data);
 					setTile(x, y, te);
+					
+					if(te instanceof IPowerProvider)
+					powerProviders.add((IPowerProvider)te);
 				}
 			}
 			
@@ -147,11 +157,34 @@ public class World
 	public void setTile(double x, double y, TileEntity te)
 	{ tiles.put(getIndex(x, y), te); }
 	
-	//TODO: Fixme
-	public FastList<Entity> getAllEntities(Entity exception, double x, double y, double w, double h)
+	public FastList<CollisionBox> getAllBlocks(CollisionBox cb, double ox, double oy)
 	{
-		FastList<Entity> list = new FastList<Entity>();
+		FastList<CollisionBox> list = new FastList<CollisionBox>();
+		
+		for(int i = 0; i < blocks.size(); i++)
+		{
+			Integer c = blocks.keys.get(i);
+			
+			int x = getX(c);
+			int y = getY(c);
+			
+			CollisionBox cb1 = new CollisionBox(x, y, x + 1D, y + 1D);
+			if(cb.isColliding(cb1, ox, oy)) list.add(cb1);
+		}
 		
 		return list;
+	}
+	
+	public boolean isPlayerAtEnd(EntityPlayer ep)
+	{
+		double x = getX((ep instanceof EntityPlayerSP) ? endPointSP : endPointMP) + 0.5D;
+		double y = getY((ep instanceof EntityPlayerSP) ? endPointSP : endPointMP) + 0.5D;
+		return MathHelper.distSq(ep.posX, ep.posY, x, y) <= 0.25D;
+	}
+	
+	public boolean isSolidBlock(double x, double y)
+	{
+		Block b = getBlock(x, y);
+		return (b != null && b.isSolidFor(this, (int)x, (int)y, null));
 	}
 }

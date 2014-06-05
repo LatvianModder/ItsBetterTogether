@@ -116,8 +116,6 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 		
 		openedGui = g;
 		onResized();
-		
-		Mouse.setGrabbed(g.allowPlayerInput());
 	}
 	
 	public void onResized()

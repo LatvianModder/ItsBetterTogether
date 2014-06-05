@@ -1,40 +1,57 @@
 package latmod.ibt.tiles;
-import latmod.core.nbt.*;
-import latmod.core.rendering.Color;
+import latmod.core.rendering.*;
+import latmod.core.util.*;
+import latmod.ibt.blocks.*;
 import latmod.ibt.world.*;
 
-public class TileButton extends TileEntity
+public class TileButton extends TileEntity implements IPowerProvider
 {
-	public String freq;
+	public int freq;
 	public Color color;
+	
+	public CollisionBox collisionBox = null;
+	public boolean isPressed = false;
 	
 	public TileButton(World w)
 	{
 		super(w);
 	}
 	
+	public void onUpdate(Timer t)
+	{
+		isPressed = collisionBox.isColliding(worldObj.playerSP.collisionBox, 0D, 0D);
+	}
+	
 	public void onRender()
 	{
-	}
-	
-	public void readFromNBT(NBTMap map)
-	{
-		freq = map.getString("Freq");
-		color = Color.get(map.getInt("Col"));
-	}
-	
-	public void writeToNBT(NBTMap map)
-	{
-		map.setString("Freq", freq);
-		map.setInt("Col", color.hex);
+		color.set();
+		Renderer.setTexture(isPressed ? ((BlockButton)type).textureOn : type.blockTexture);
+		Renderer.rect(posX, posY, 1D, 1D);
 	}
 	
 	public void loadTile(ExtraData data)
 	{
-		freq = data.getS("freq", "def");
-		color = data.getC("col", Color.WHITE);
+		freq = data.getN("freq", 0).intValue();
+		color = data.getC("color", Color.WHITE);
+		
+		collisionBox = new CollisionBox(posX, posY, posX + 1D, posY + 1D);
+	}
+	
+	public void readTile(DataIOStream dios) throws Exception
+	{
+		freq = dios.readByte();
+		color = Color.get(dios.readInt());
+	}
+	
+	public void writeTile(DataIOStream dios) throws Exception
+	{
+		dios.writeByte(freq);
+		dios.writeInt(color.hex);
 	}
 
-	public boolean isPressed()
-	{ return false; }
+	public int getFreq()
+	{ return freq; }
+
+	public boolean isProvidingPower()
+	{ return isPressed; }
 }

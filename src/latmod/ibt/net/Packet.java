@@ -10,9 +10,10 @@ public abstract class Packet
 	public Packet(int i)
 	{ packetID = i; }
 	
-	public abstract void readPacket(DataIOStream dios) throws Exception;
-	public abstract void writePacket(DataIOStream dios) throws Exception;
-	public abstract void processPacket(World w);
+	public abstract void writePacket(World w, DataIOStream dios) throws Exception;
+	public abstract void readPacket(World w, DataIOStream dios) throws Exception;
+	
+	public final void processPacket(World w) {}
 	
 	public void printChat(String s)
 	{
@@ -55,7 +56,6 @@ public abstract class Packet
 	
 	public static void loadPackets()
 	{
-		addPacket(PacketEmpty.class);
 		addPacket(PacketPlayerUpdate.class);
 		addPacket(PacketPlayerDied.class);
 		addPacket(PacketBlockSet.class);

@@ -10,6 +10,8 @@ public class WorldRenderer
 	public World worldObj;
 	
 	private Texture texBG;
+	private Texture texEndOn;
+	private Texture texEndOff;
 	
 	public int[] lightMap;
 	public int lightMapListID = -1;
@@ -24,6 +26,8 @@ public class WorldRenderer
 	{
 		lightMap = new int[worldObj.width * worldObj.height];
 		texBG = Renderer.getTexture(worldObj.backgroundTex);
+		texEndOn = Renderer.getTexture("world/endPoint_on.png");
+		texEndOff = Renderer.getTexture("world/endPoint_off.png");
 	}
 	
 	public void onRender()
@@ -41,6 +45,14 @@ public class WorldRenderer
 			if(b.isVisible(worldObj, worldObj.getX(c), worldObj.getY(c)))
 			b.onRender(worldObj, worldObj.getX(c), worldObj.getY(c));
 		}
+		
+		Renderer.setTexture(worldObj.isPlayerAtEnd(worldObj.playerSP) ? texEndOn : texEndOff);
+		worldObj.playerSP.color.set(255);
+		Renderer.rect(worldObj.getX(worldObj.endPointSP), worldObj.getY(worldObj.endPointSP), 1D, 1D);
+		
+		Renderer.setTexture(worldObj.isPlayerAtEnd(worldObj.playerMP) ? texEndOn : texEndOff);
+		worldObj.playerMP.color.set(255);
+		Renderer.rect(worldObj.getX(worldObj.endPointMP), worldObj.getY(worldObj.endPointMP), 1D, 1D);
 		
 		for(TileEntity te : worldObj.tiles)
 		te.onRender();

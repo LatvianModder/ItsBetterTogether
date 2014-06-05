@@ -1,5 +1,4 @@
 package latmod.ibt.tiles;
-import latmod.core.nbt.*;
 import latmod.core.util.*;
 import latmod.ibt.blocks.*;
 import latmod.ibt.world.*;
@@ -17,8 +16,8 @@ public abstract class TileEntity
 	}
 	
 	public abstract void loadTile(ExtraData data);
-	public abstract void readFromNBT(NBTMap map);
-	public abstract void writeToNBT(NBTMap map);
+	public abstract void readTile(DataIOStream dios) throws Exception;
+	public abstract void writeTile(DataIOStream dios) throws Exception;
 	
 	public void onDestroyed()
 	{
@@ -27,9 +26,6 @@ public abstract class TileEntity
 	public void onUpdate(Timer t)
 	{
 	}
-	
-	public boolean isVisible()
-	{ return true; }
 	
 	public void onRender()
 	{

@@ -7,12 +7,13 @@ import latmod.ibt.GameOptions;
 import latmod.ibt.Main;
 import latmod.ibt.world.*;
 
-public class EntityPlayerSP extends EntityPlayer
+public class EntityPlayerSP extends EntityPlayer // Entity
 {
 	public EntityPlayerSP(World w)
 	{
 		super(w);
 		username = GameOptions.props.username;
+		color = TextColor.L_BLUE.color;
 	}
 	
 	public void onRender()
@@ -29,16 +30,19 @@ public class EntityPlayerSP extends EntityPlayer
 	
 	public void onUpdate(Timer t)
 	{
-		double speed = 0.15D;
+		double speed = 0.1D;
 		
-		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) speed *= 1.7D;
-		if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) speed *= 0.3D;
+		if(Main.inst.getGui().allowPlayerInput())
+		{
+			if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) speed *= 1.7D;
+			else if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) speed *= 0.3D;
+			
+			if(Keyboard.isKeyDown(Keyboard.KEY_W)) move(0D, -1D, speed);
+			if(Keyboard.isKeyDown(Keyboard.KEY_S)) move(0D, 1D, speed);
+			if(Keyboard.isKeyDown(Keyboard.KEY_A)) move(-1D, 0D, speed);
+			if(Keyboard.isKeyDown(Keyboard.KEY_D)) move(1D, 0D, speed);
+		}
 		
-		if(Keyboard.isKeyDown(Keyboard.KEY_W)) move(0D, -1D, speed);
-		if(Keyboard.isKeyDown(Keyboard.KEY_S)) move(0D, 1D, speed);
-		if(Keyboard.isKeyDown(Keyboard.KEY_A)) move(-1D, 0D, speed);
-		if(Keyboard.isKeyDown(Keyboard.KEY_D)) move(1D, 0D, speed);
-		
-		worldObj.renderer.lightMapDirty = true;
+		moveEntity();
 	}
 }

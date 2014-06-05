@@ -7,15 +7,11 @@ public class PacketPlayerDied extends Packet
 	public PacketPlayerDied()
 	{ super(ID_PLAYER_DIED); }
 
-	public void readPacket(DataIOStream dios) throws Exception
+	public void writePacket(World w, DataIOStream dios) throws Exception
 	{
 	}
-
-	public void writePacket(DataIOStream dios) throws Exception
-	{
-	}
-
-	public void processPacket(World w)
+	
+	public void readPacket(World w, DataIOStream dios) throws Exception
 	{
 		printChat(w.playerMP.username + " died");
 	}

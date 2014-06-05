@@ -22,7 +22,7 @@ public class GuiIngame extends GuiBasic
 	}
 	
 	public boolean allowPlayerInput()
-	{ return false; }
+	{ return true; }
 	
 	public void onEscPressed()
 	{

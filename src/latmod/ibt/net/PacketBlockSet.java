@@ -1,29 +1,38 @@
 package latmod.ibt.net;
 import latmod.core.util.*;
+import latmod.ibt.blocks.Block;
 import latmod.ibt.world.*;
 
 public class PacketBlockSet extends Packet
 {
-	public int posX, posY, blockID;
+	public int posX, posY;
+	public Block block;
 	
 	public PacketBlockSet()
 	{ super(ID_NONE); }
-
-	public void readPacket(DataIOStream dios) throws Exception
+	
+	public PacketBlockSet(int x, int y, Block b)
 	{
-		posX = dios.readByte();
-		posY = dios.readByte();
-		blockID = dios.readShort();
+		this();
+		posX = x;
+		posY = y;
+		block = b;
 	}
-
-	public void writePacket(DataIOStream dios) throws Exception
+	
+	public void writePacket(World w, DataIOStream dios) throws Exception
 	{
 		dios.writeByte(posX);
 		dios.writeByte(posY);
-		dios.writeShort(blockID);
+		dios.writeShort((block == null) ? 0 : block.getID(w));
 	}
 
-	public void processPacket(World w)
+	public void readPacket(World w, DataIOStream dios) throws Exception
 	{
+		posX = dios.readByte();
+		posY = dios.readByte();
+		int bid = dios.readShort();
+		block = (bid == 0) ? null : w.registry.getBlock(bid);
+		
+		w.setBlock(posX, posY, block);
 	}
 }

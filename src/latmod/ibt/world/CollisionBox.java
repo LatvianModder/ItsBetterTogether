@@ -1,4 +1,5 @@
 package latmod.ibt.world;
+import latmod.core.rendering.Renderer;
 import latmod.core.util.*;
 
 public class CollisionBox
@@ -6,6 +7,9 @@ public class CollisionBox
 	public double minX, minY, maxX, maxY;
 	
 	public CollisionBox(double x1, double y1, double x2, double y2)
+	{ set(x1, y1, x2, y2); }
+	
+	public void set(double x1, double y1, double x2, double y2)
 	{
 		minX = x1;
 		minY = y1;
@@ -26,6 +30,14 @@ public class CollisionBox
 		if(y < minY || y > maxY) return false;
 		return true;
 	}
+	
+	public void drawRect()
+	{
+		Renderer.rect(minX, minY, maxX - minX, maxY - minY);
+	}
+	
+	public int getIndex(World w)
+	{ return w.getIndex(minX, minY); }
 	
 	public static CollisionBox getAABBAtPoint(FastList<? extends CollisionBox> list, double x, double y)
 	{

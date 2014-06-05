@@ -1,22 +1,24 @@
 package latmod.ibt.entity;
-import latmod.core.nbt.NBTMap;
 import latmod.core.rendering.*;
+import latmod.core.util.*;
 import latmod.ibt.world.*;
 
 public class EntityPlayer extends Entity
 {
 	public String username = null;
+	public Color color = Color.WHITE;
 	
 	public EntityPlayer(World w)
 	{
 		super(w);
+		radius = 0.25D;
 	}
 	
 	public void onRender()
 	{
 		Renderer.disableTexture();
-		Color.WHITE.set(100);
-		Renderer.drawPoly(posX, posY, 0.5D, 16D);
+		color.set(100);
+		Renderer.drawPoly(posX, posY, radius, 16D);
 		Renderer.enableTexture();
 		
 		double scale = 1D / 64D;
@@ -27,15 +29,13 @@ public class EntityPlayer extends Entity
 	public boolean isVisible()
 	{ return true; }
 	
-	public final void readFromNBT(NBTMap map)
+	public void readEntity(DataIOStream dios) throws Exception
 	{
-		super.readFromNBT(map);
-		username = map.getString("Name");
+		super.readEntity(dios);
 	}
 	
-	public final void writeToNBT(NBTMap map)
+	public void writeEntity(DataIOStream dios) throws Exception
 	{
-		super.writeToNBT(map);
-		map.setString("Name", username);
+		super.writeEntity(dios);
 	}
 }

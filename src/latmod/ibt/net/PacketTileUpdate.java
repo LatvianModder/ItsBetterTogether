@@ -1,13 +1,11 @@
 package latmod.ibt.net;
-import latmod.core.nbt.NBTMap;
 import latmod.core.util.*;
-import latmod.ibt.tiles.TileEntity;
+import latmod.ibt.tiles.*;
 import latmod.ibt.world.*;
 
 public class PacketTileUpdate extends Packet
 {
-	public int posX, posY;
-	public NBTMap dataMap;
+	public TileEntity tile;
 	
 	public PacketTileUpdate()
 	{ super(ID_TILE_UPDATE); }
@@ -15,29 +13,22 @@ public class PacketTileUpdate extends Packet
 	public PacketTileUpdate(TileEntity te)
 	{
 		this();
-		posX = te.posX;
-		posY = te.posY;
-		dataMap = new NBTMap(null);
-		te.writeToNBT(dataMap);
+		tile = te;
 	}
 	
-	public void readPacket(DataIOStream dios) throws Exception
+	public void writePacket(World w, DataIOStream dios) throws Exception
 	{
-		posX = dios.readByte();
-		posY = dios.readByte();
-		dataMap = new NBTMap(null);
-		dataMap.read(dios);
+		dios.writeByte(tile.posX);
+		dios.writeByte(tile.posY);
+		tile.writeTile(dios);
 	}
-
-	public void writePacket(DataIOStream dios) throws Exception
+	
+	public void readPacket(World w, DataIOStream dios) throws Exception
 	{
-		dios.writeByte(posX);
-		dios.writeByte(posY);
-		dataMap.write(dios);
-	}
-
-	public void processPacket(World w)
-	{
-		w.playerMP.readFromNBT(dataMap);
+		int x = dios.readByte();
+		int y = dios.readByte();
+		
+		TileEntity te = w.getTile(x, y);
+		te.readTile(dios);
 	}
 }

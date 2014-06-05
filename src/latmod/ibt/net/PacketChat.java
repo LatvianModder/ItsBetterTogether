@@ -13,18 +13,14 @@ public class PacketChat extends Packet
 	public PacketChat(String s)
 	{ this(); text = s; }
 	
-	public void readPacket(DataIOStream dios) throws Exception
-	{
-		text = dios.readString();
-	}
-
-	public void writePacket(DataIOStream dios) throws Exception
+	public void writePacket(World w, DataIOStream dios) throws Exception
 	{
 		dios.writeString(text);
 	}
-
-	public void processPacket(World w)
+	
+	public void readPacket(World w, DataIOStream dios) throws Exception
 	{
+		text = dios.readString();
 		Main.logger.info(text);
 	}
 }

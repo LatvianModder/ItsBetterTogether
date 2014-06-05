@@ -1,6 +1,6 @@
 package latmod.ibt.tiles;
-import latmod.core.nbt.*;
-import latmod.core.rendering.Color;
+import latmod.core.rendering.*;
+import latmod.core.util.*;
 import latmod.ibt.blocks.*;
 import latmod.ibt.world.*;
 
@@ -38,22 +38,21 @@ public class TileCustom extends TileEntity
 		Block.lamp.onRender(worldObj, posX, posY);
 	}
 	
-	public void readFromNBT(NBTMap map)
+	public void readTile(DataIOStream dios) throws Exception
 	{
-		lightValue = map.getByte("Light");
-		String s = map.getString("Block");
-		texture = Block.addedBlocks.get(s);
-		color = Color.get(map.getInt("Col"));
-		rotation = map.getByte("Rot");
-		isGhost = map.getBoolean("Ghost");
+		lightValue = dios.readByte();
+		texture = worldObj.registry.getBlock(dios.readShort());
+		color = Color.get(dios.readInt());
+		rotation = dios.readByte();
+		isGhost = dios.readBoolean();
 	}
 	
-	public void writeToNBT(NBTMap map)
+	public void writeTile(DataIOStream dios) throws Exception
 	{
-		map.setByte("Light", lightValue);
-		map.setString("Block", texture.blockID);
-		map.setInt("Col", color.hex);
-		map.setByte("Rot", rotation);
-		map.setBoolean("Ghost", isGhost);
+		dios.writeByte(lightValue);
+		dios.writeShort(texture.getID(worldObj));
+		dios.writeInt(color.hex);
+		dios.writeByte(rotation);
+		dios.writeBoolean(isGhost);
 	}
 }
