@@ -9,6 +9,7 @@ import latmod.core.rendering.*;
 import latmod.core.util.*;
 import latmod.ibt.blocks.*;
 import latmod.ibt.gui.*;
+import latmod.ibt.tiles.TileRegistry;
 import latmod.ibt.world.*;
 
 public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListener.Pressed
@@ -21,9 +22,10 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 	public static Logger logger = Logger.getLogger("Game");
 	
 	public double zoom = 64D;
-	public boolean takingScreenshot = false;
 	
 	private GuiBasic openedGui = null;
+	
+	public double mouseX, mouseY;
 	
 	public void onLoaded()
 	{
@@ -31,22 +33,29 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 		super.onLoaded();
 		logger.setParent(LatCore.logger);
 		
-		GameOptions.loadOptions();
+		loadGame();
 		
 		openGui(new GuiStart());
 		
-		if(mainArgs.keys.contains("-openLevel"))
+		if(mainArgs.keys.contains("-host"))
 		{
-			String json = mainArgs.get("-jsonLevel");
-			String png = mainArgs.get("-pngLevel");
+			boolean b = Boolean.parseBoolean(mainArgs.get("-host"));
+			String json = mainArgs.get("-json");
+			String png = mainArgs.get("-png");
 			
 			if(json != null && png != null)
 			{
-				openLevel(WorldLoader.class.getResourceAsStream(json), WorldLoader.class.getResourceAsStream(png));
+				hostGame(WorldLoader.class.getResourceAsStream(json), WorldLoader.class.getResourceAsStream(png), b);
 			}
 		}
+	}
+	
+	public void loadGame()
+	{
+		GameOptions.loadOptions();
+		TileRegistry.loadTiles();
 		
-		for(Block b : Block.addedBlocks)
+		for(Block b : Block.blockMap)
 		b.reloadTextures();
 	}
 	
@@ -55,8 +64,11 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 		Renderer.enter2D();
 		Renderer.disableTexture();
 		
-		if(World.inst != null)
+		if(World.inst != null && World.inst.playerSP != null)
 		{
+			mouseX = (mouse.x - width / 2D) / zoom + World.inst.playerSP.posX;
+			mouseY = (mouse.y - height / 2D) / zoom + World.inst.playerSP.posY;
+			
 			Renderer.push();
 			Renderer.translate(-(World.inst.playerSP.posX * zoom - width / 2D), -(World.inst.playerSP.posY * zoom - height / 2D));
 			Renderer.scale(zoom, zoom, 1D);
@@ -67,14 +79,9 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 			
 			World.inst.playerSP.onGuiRender();
 		}
+		else mouseX = mouseY = -1D;
 		
 		openedGui.onRender();
-		
-		if(takingScreenshot)
-		{
-			Renderer.takeScreenshot();
-			takingScreenshot = false;
-		}
 	}
 	
 	public void onFrameUpdate(Timer t)
@@ -93,11 +100,13 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 		}
 		else if(key == GameOptions.KEY_SCREENSHOT.key)
 		{
-			takingScreenshot = true;
+			Renderer.takeScreenshot();
 			return Cancel.TRUE;
 		}
-		else if(key == GameOptions.KEY_TEST.key)
+		else
 		{
+			if(openedGui.allowPlayerInput() && World.inst != null && World.inst.playerSP != null)
+				World.inst.playerSP.keyPressed(key);
 		}
 		
 		return Cancel.FALSE;
@@ -142,17 +151,26 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 		if(zoom < 8D) zoom = 8D;
 	}
 	
-	public void openLevel(InputStream json, InputStream png)
+	public void hostGame(boolean router)
+	{
+		hostGame(WorldLoader.class.getResourceAsStream("/levels/level1.json"), WorldLoader.class.getResourceAsStream("/levels/level1.png"), router);
+	}
+	
+	public void hostGame(InputStream json, InputStream png, boolean router)
 	{
 		World.inst = new World();
 		WorldLoader.loadWorldFromStream(World.inst, json, png);
 		openGui(null);
 	}
 	
-	public void openLevel(String json, int[] pixels)
+	public void hostGame(String json, int[] pixels, boolean router)
 	{
 		World.inst = new World();
 		WorldLoader.loadWorldFromJson(World.inst, json, pixels);
 		openGui(null);
+	}
+	
+	public void joinGame(String ip)
+	{
 	}
 }

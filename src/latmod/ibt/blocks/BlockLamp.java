@@ -4,9 +4,9 @@ import latmod.ibt.world.*;
 
 public class BlockLamp extends Block implements ITileBlock
 {
-	public BlockLamp(String s)
+	public BlockLamp(int i, String s)
 	{
-		super(s);
+		super(i, s);
 		setLightValue(1F);
 	}
 	
@@ -22,6 +22,6 @@ public class BlockLamp extends Block implements ITileBlock
 	public TileEntity createTile(World w)
 	{ return new TileLamp(w); }
 	
-	public void registerTiles(IDReg reg)
-	{ reg.addTile(blockID, TileLamp.class); }
+	public void registerTiles()
+	{ TileRegistry.addTile(this, TileLamp.class); }
 }

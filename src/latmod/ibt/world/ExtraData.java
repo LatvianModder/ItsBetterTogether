@@ -52,8 +52,8 @@ public class ExtraData
 	public Block getBlock(String s, Block def)
 	{
 		String s1 = getS(s, null);
-		if(s1 == null || !Block.addedBlocks.keys.contains(s1))
-		return def; return Block.addedBlocks.get(s1);
+		if(s1 == null || !Block.blockNameMap.keys.contains(s1))
+		return def; return Block.blockNameMap.get(s1);
 	}
 	
 	public Color getC(String s, Color def)

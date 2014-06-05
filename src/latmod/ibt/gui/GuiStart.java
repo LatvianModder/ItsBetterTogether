@@ -22,8 +22,8 @@ public class GuiStart extends GuiBasic
 	public void onWidgetEvent(int i, Widget w, String event, Object... args)
 	{
 		if(i == 0) Main.inst.destroy();
-		else if(i == 1) Main.inst.openGui(null);
-		else if(i == 2) Main.inst.openGui(null);
+		else if(i == 1) Main.inst.openGui(new GuiHost());
+		else if(i == 2) Main.inst.openGui(new GuiJoin());
 		else if(i == 3) Main.inst.openGui(null);
 		else if(i == 4) Main.inst.openGui(null);
 	}

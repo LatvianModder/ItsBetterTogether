@@ -1,14 +1,14 @@
 package latmod.ibt.entity;
 import org.lwjgl.input.*;
-
 import latmod.core.rendering.*;
 import latmod.core.util.*;
-import latmod.ibt.GameOptions;
-import latmod.ibt.Main;
+import latmod.ibt.*;
 import latmod.ibt.world.*;
 
 public class EntityPlayerSP extends EntityPlayer // Entity
 {
+	public boolean debug = false;
+	
 	public EntityPlayerSP(World w)
 	{
 		super(w);
@@ -16,16 +16,21 @@ public class EntityPlayerSP extends EntityPlayer // Entity
 		color = TextColor.L_BLUE.color;
 	}
 	
-	public void onRender()
-	{
-		super.onRender();
-	}
-	
 	public void onGuiRender()
 	{
 		Renderer.enableTexture();
-		Font.inst.drawText(4, 4, "FPS: " + Main.inst.FPS + ", TPS: " + Main.inst.TPS);
-		Font.inst.drawText(4, 24, worldObj.worldName);
+		FastList<String> txt = new FastList<String>();
+		
+		txt.add(worldObj.worldName);
+		
+		if(debug)
+		{
+			txt.add("FPS: " + Main.inst.FPS + ", TPS: " + Main.inst.TPS);
+			txt.add("X, Y, R: " + LatCore.stripDouble(posX, posY, rotation));
+		}
+		
+		for(int i = 0; i < txt.size(); i++)
+		Font.inst.drawText(4, 4 + i * 20, txt.get(i));
 	}
 	
 	public void onUpdate(Timer t)
@@ -44,5 +49,11 @@ public class EntityPlayerSP extends EntityPlayer // Entity
 		}
 		
 		moveEntity();
+	}
+	
+	public void keyPressed(int key)
+	{
+		if(key == GameOptions.KEY_DEBUG.key)
+			debug = !debug;
 	}
 }

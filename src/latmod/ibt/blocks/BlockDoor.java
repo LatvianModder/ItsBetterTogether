@@ -5,9 +5,9 @@ import latmod.ibt.world.*;
 
 public class BlockDoor extends Block implements ITileBlock
 {
-	public BlockDoor(String s)
+	public BlockDoor(int i, String s)
 	{
-		super(s);
+		super(i, s);
 	}
 	
 	public boolean isVisible(World w, int x, int y)
@@ -19,6 +19,6 @@ public class BlockDoor extends Block implements ITileBlock
 	public boolean isSolidFor(World w, int x, int y, Entity e)
 	{ return !((TileDoor)w.getTile(x, y)).isOpen; }
 	
-	public void registerTiles(IDReg reg)
-	{ reg.addTile(blockID, TileDoor.class); }
+	public void registerTiles()
+	{ TileRegistry.addTile(this, TileDoor.class); }
 }

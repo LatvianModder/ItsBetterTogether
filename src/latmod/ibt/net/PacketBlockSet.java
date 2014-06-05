@@ -23,7 +23,7 @@ public class PacketBlockSet extends Packet
 	{
 		dios.writeByte(posX);
 		dios.writeByte(posY);
-		dios.writeShort((block == null) ? 0 : block.getID(w));
+		dios.writeShort((block == null) ? 0 : block.blockID);
 	}
 
 	public void readPacket(World w, DataIOStream dios) throws Exception
@@ -31,7 +31,7 @@ public class PacketBlockSet extends Packet
 		posX = dios.readByte();
 		posY = dios.readByte();
 		int bid = dios.readShort();
-		block = (bid == 0) ? null : w.registry.getBlock(bid);
+		block = (bid == 0) ? null : Block.blockMap.get(bid);
 		
 		w.setBlock(posX, posY, block);
 	}

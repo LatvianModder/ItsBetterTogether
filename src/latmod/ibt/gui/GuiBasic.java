@@ -15,7 +15,10 @@ public abstract class GuiBasic extends Gui
 	{ addWidget(id, new Button(this, x, y, w, h, s)); }
 	
 	public void addCenterButton(int id, String s, double y, double w, double h)
-	{ addButton(id, s, (width - w) / 2D, y, w, h); }
+	{
+		Button.setCentred(true, true);
+		addButton(id, s, width / 2D, y, w, h);
+	}
 	
 	public void onEscPressed()
 	{

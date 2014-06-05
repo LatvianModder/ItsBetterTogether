@@ -23,7 +23,7 @@ public class TileLamp extends TileEntity
 	
 	public void loadTile(ExtraData data)
 	{
-		bgBlock = Block.addedBlocks.get(data.getS("block", "wall_stone"));
+		bgBlock = Block.blockNameMap.get(data.getS("block", "wall_stone"));
 		lightValue = data.getN("lightValue", 15, 0, 15).intValue();
 		
 		worldObj.renderer.lightMapDirty = true;
@@ -32,12 +32,12 @@ public class TileLamp extends TileEntity
 	public void readTile(DataIOStream dios) throws Exception
 	{
 		lightValue = dios.readByte();
-		bgBlock = worldObj.registry.getBlock(dios.readShort());
+		bgBlock = Block.blockMap.get(dios.readShort());
 	}
 	
 	public void writeTile(DataIOStream dios) throws Exception
 	{
 		dios.writeByte(lightValue);
-		dios.writeShort(bgBlock.getID(worldObj));
+		dios.writeShort(bgBlock.blockID);
 	}
 }

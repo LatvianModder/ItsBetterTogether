@@ -8,9 +8,9 @@ public class BlockButton extends Block implements ITileBlock
 {
 	public Texture textureOn;
 	
-	public BlockButton(String s)
+	public BlockButton(int i, String s)
 	{
-		super(s);
+		super(i, s);
 	}
 	
 	public void reloadTextures()
@@ -25,8 +25,8 @@ public class BlockButton extends Block implements ITileBlock
 	public TileEntity createTile(World w)
 	{ return new TileButton(w); }
 
-	public void registerTiles(IDReg reg)
-	{ reg.addTile(blockID, TileButton.class); }
+	public void registerTiles()
+	{ TileRegistry.addTile(this, TileButton.class); }
 	
 	public boolean isSolidFor(World w, int x, int y, Entity e)
 	{ return false; }

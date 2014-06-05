@@ -11,7 +11,6 @@ public class World
 {
 	public static World inst = null;
 	
-	public final IDReg registry;
 	public final WorldRenderer renderer;
 	
 	public String worldName;
@@ -33,7 +32,6 @@ public class World
 
 	public World()
 	{
-		registry = new IDReg(this);
 		renderer = new WorldRenderer(this);
 		extraArgs = new FastMap<String, String>();
 		
@@ -50,8 +48,6 @@ public class World
 		renderer.postInit();
 		playerSP = new EntityPlayerSP(this);
 		playerMP = new EntityPlayerMP(this);
-		
-		registry.load();
 	}
 	
 	public void onUpdate(Timer t)

@@ -83,7 +83,7 @@ public class WorldLoader
 				else
 				{
 					BlockLoader b = blocksCols.get(pixels[i]);
-					if(b != null) w.setBlock(x, y, Block.addedBlocks.get(b.id), b.getData());
+					if(b != null) w.setBlock(x, y, Block.blockNameMap.get(b.id), b.getData());
 					else w.setBlock(x, y, Block.unknown);
 				}
 			}

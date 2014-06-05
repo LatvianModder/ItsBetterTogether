@@ -6,15 +6,19 @@ import latmod.ibt.world.*;
 
 public class Block
 {
-	public final String blockID;
+	public final int blockID;
+	public final String blockName;
 	public Texture blockTexture;
 	public final boolean hasTile = (this instanceof ITileBlock);
 	private int lightValue = 0;
 	
-	public Block(String s)
+	public Block(int i, String s)
 	{
-		blockID = s;
-		addedBlocks.put(blockID, this);
+		blockID = i;
+		blockName = s;
+		
+		blockMap.put(blockID, this);
+		blockNameMap.put(blockName, this);
 	}
 	
 	public void setLightValue(float f)
@@ -25,7 +29,7 @@ public class Block
 	
 	public void reloadTextures()
 	{
-		blockTexture = Renderer.getTexture("blocks/" + blockID + ".png");
+		blockTexture = Renderer.getTexture("blocks/" + blockName + ".png");
 	}
 	
 	public void onRender(World w, double x, double y)
@@ -65,17 +69,14 @@ public class Block
 	
 	// --  -- //
 	
-	public static final FastMap<String, Block> addedBlocks = new FastMap<String, Block>();
+	public static final FastMap<Integer, Block> blockMap = new FastMap<Integer, Block>();
+	public static final FastMap<String, Block> blockNameMap = new FastMap<String, Block>();
 	
-	public static final Block unknown = new Block("unknown");
-	public static final Block wall_stone = new Block("wall_stone");
-	public static final Block wall_stone_bricks = new Block("wall_stone_bricks");
-	public static final Block wall_stone_cracked = new Block("wall_stone_cracked");
-	public static final Block lamp = new BlockLamp("lamp");
-	public static final Block door = new BlockDoor("door");
-	public static final Block button = new BlockButton("button");
-	public static final Block custom = new BlockCustom("custom");
-
-	public Integer getID(World w)
-	{ return w.registry.blocks.getID(blockID); }
+	public static final Block unknown = new Block(0, "unknown");
+	public static final Block wall_stone = new Block(1, "wall_stone");
+	public static final Block wall_stone_bricks = new Block(2, "wall_stone_bricks");
+	public static final Block wall_stone_cracked = new Block(3, "wall_stone_cracked");
+	public static final Block lamp = new BlockLamp(4, "lamp");
+	public static final Block door = new BlockDoor(5, "door");
+	public static final Block button = new BlockButton(6, "button");
 }
