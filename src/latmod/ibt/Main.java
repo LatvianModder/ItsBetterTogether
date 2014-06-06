@@ -1,7 +1,10 @@
 package latmod.ibt;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.logging.Logger;
+
 import org.lwjgl.input.*;
+
 import latmod.core.input.*;
 import latmod.core.rendering.*;
 import latmod.core.util.*;
@@ -39,14 +42,45 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 		
 		if(mainArgs.keys.contains("-host"))
 		{
-			boolean b = Boolean.parseBoolean(mainArgs.get("-host"));
-			String json = mainArgs.get("-json");
-			String png = mainArgs.get("-png");
+			boolean router = mainArgs.keys.contains("-router");
+			String portS = mainArgs.get("-port");
+			int port = (portS == null) ? GameOptions.DEF_PORT : Integer.parseInt(portS);
 			
-			if(json != null && png != null)
+			InputStream json = null;
+			InputStream png = null;
+			
+			String stream = mainArgs.get("-levelStream");
+			if(stream != null)
 			{
-				hostGame(WorldLoader.class.getResourceAsStream(json), WorldLoader.class.getResourceAsStream(png), b);
+				json = WorldLoader.class.getResourceAsStream(stream + ".json");
+				png = WorldLoader.class.getResourceAsStream(stream + ".png");
 			}
+			
+			String url = mainArgs.get("-levelURL");
+			if(url != null)
+			{
+				try
+				{
+					json = new URL(url + ".json").openStream();
+					png = new URL(url + ".png").openStream();
+				}
+				catch(Exception e)
+				{ e.printStackTrace(); json = png = null; }
+			}
+			
+			String gitHub = mainArgs.get("-levelGitHub");
+			if(gitHub != null)
+			{
+				try
+				{
+					json = new URL("https://raw.githubusercontent.com/" + url + ".json").openStream();
+					png = new URL("https://raw.githubusercontent.com/" + url + ".png").openStream();
+				}
+				catch(Exception e)
+				{ e.printStackTrace(); json = png = null; }
+			}
+			if(json != null && png != null)
+				hostGame(json, png, port, router);
 		}
 	}
 	
@@ -155,17 +189,17 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 	
 	public void hostGame(boolean router)
 	{
-		hostGame(WorldLoader.class.getResourceAsStream("/levels/level1.json"), WorldLoader.class.getResourceAsStream("/levels/level1.png"), router);
+		hostGame(WorldLoader.class.getResourceAsStream("/levels/level1.json"), WorldLoader.class.getResourceAsStream("/levels/level1.png"), GameOptions.DEF_PORT, router);
 	}
 	
-	public void hostGame(InputStream json, InputStream png, boolean router)
+	public void hostGame(InputStream json, InputStream png, int port, boolean router)
 	{
 		World.inst = new World();
 		WorldLoader.loadWorldFromStream(World.inst, json, png);
 		openGui(null);
 	}
 	
-	public void hostGame(String json, int[] pixels, boolean router)
+	public void hostGame(String json, int[] pixels, int port, boolean router)
 	{
 		World.inst = new World();
 		WorldLoader.loadWorldFromJson(World.inst, json, pixels);
