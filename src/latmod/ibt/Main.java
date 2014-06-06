@@ -2,9 +2,7 @@ package latmod.ibt;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.logging.Logger;
-
 import org.lwjgl.input.*;
-
 import latmod.core.input.*;
 import latmod.core.rendering.*;
 import latmod.core.util.*;
@@ -26,6 +24,7 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 	public double zoom = 64D;
 	
 	private GuiBasic openedGui = null;
+	private String usernameOverride = null;
 	
 	public Entity cameraEntity = null;
 	public double mouseX, mouseY;
@@ -36,27 +35,37 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 		super.onLoaded();
 		logger.setParent(LatCore.logger);
 		
+		int s = LatCore.getAllClassesInDir(Main.class).size();
+		s += LatCore.getAllClassesInDir(LatCore.class).size();
+		
+		logger.info("Found totally " + s + " classes in this game");
+		
 		loadGame();
 		
 		openGui(new GuiStart());
 		
-		if(mainArgs.keys.contains("-host"))
+		executeArguments(mainArgs);
+	}
+	
+	public void executeArguments(FastMap<String, String> args)
+	{
+		if(args.keys.contains("-host"))
 		{
-			boolean router = mainArgs.keys.contains("-router");
-			String portS = mainArgs.get("-port");
+			boolean router = args.keys.contains("-router");
+			String portS = args.get("-port");
 			int port = (portS == null) ? GameOptions.DEF_PORT : Integer.parseInt(portS);
 			
 			InputStream json = null;
 			InputStream png = null;
 			
-			String stream = mainArgs.get("-levelStream");
+			String stream = args.get("-levelStream");
 			if(stream != null)
 			{
 				json = WorldLoader.class.getResourceAsStream(stream + ".json");
 				png = WorldLoader.class.getResourceAsStream(stream + ".png");
 			}
 			
-			String url = mainArgs.get("-levelURL");
+			String url = args.get("-levelURL");
 			if(url != null)
 			{
 				try
@@ -68,7 +77,7 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 				{ e.printStackTrace(); json = png = null; }
 			}
 			
-			String gitHub = mainArgs.get("-levelGitHub");
+			String gitHub = args.get("-levelGitHub");
 			if(gitHub != null)
 			{
 				try
@@ -82,7 +91,23 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 			if(json != null && png != null)
 				hostGame(json, png, port, router);
 		}
+		else if(mainArgs.keys.contains("-join"))
+		{
+			String ip = mainArgs.get("-join");
+			String portS = args.get("-port");
+			int port = (portS == null) ? GameOptions.DEF_PORT : Integer.parseInt(portS);
+			joinGame(ip, port);
+		}
+		
+		usernameOverride = mainArgs.get("-username");
 	}
+	
+	public void executeArguments(String... args)
+	{ executeArguments(LatCore.createArgs(args)); }
+	
+	public String getPlayerUsername()
+	{ if(usernameOverride != null) return usernameOverride;
+	return GameOptions.props.username; }
 	
 	public void loadGame()
 	{
@@ -187,33 +212,35 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 		if(zoom < 8D) zoom = 8D;
 	}
 	
-	public void hostGame(boolean router)
-	{
-		hostGame(WorldLoader.class.getResourceAsStream("/levels/level1.json"), WorldLoader.class.getResourceAsStream("/levels/level1.png"), GameOptions.DEF_PORT, router);
-	}
-	
 	public void hostGame(InputStream json, InputStream png, int port, boolean router)
 	{
-		World.inst = new World();
+		World.inst = new WorldServer();
 		WorldLoader.loadWorldFromStream(World.inst, json, png);
 		openGui(null);
 	}
 	
 	public void hostGame(String json, int[] pixels, int port, boolean router)
 	{
-		World.inst = new World();
+		World.inst = new WorldServer();
 		WorldLoader.loadWorldFromJson(World.inst, json, pixels);
 		openGui(null);
 	}
 	
-	public void joinGame(String ip)
+	public void joinGame(String ip, int port)
 	{
+		World.inst = new WorldClient();
+		World.inst.postInit();
+		openGui(null);
 	}
 	
 	public void closeGame()
 	{
-		World.inst.onClosed();
-		World.inst = null;
+		if(World.inst != null)
+		{
+			World.inst.onClosed();
+			World.inst = null;
+		}
+		
 		openGui(null);
 	}
 }

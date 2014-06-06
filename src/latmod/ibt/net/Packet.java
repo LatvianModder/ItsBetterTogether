@@ -58,7 +58,6 @@ public abstract class Packet
 	{
 		addPacket(PacketPlayerUpdate.class);
 		addPacket(PacketPlayerDied.class);
-		addPacket(PacketBlockSet.class);
 		addPacket(PacketTileUpdate.class);
 		//addPacket(PacketEntityCreated.class);
 		//addPacket(PacketEntityUpdate.class);

@@ -1,7 +1,9 @@
 package latmod.ibt.net;
 import java.net.*;
 
-public class NetServer
+import latmod.core.util.EnumStatus;
+
+public class NetServer implements Runnable, INet
 {
 	public ServerSocket serverSocket;
 	public NetClient client;
@@ -9,9 +11,12 @@ public class NetServer
 	public EnumStatus opening = EnumStatus.NOT_STARTED;
 	public EnumStatus waitingClient = EnumStatus.NOT_STARTED;
 	
-	public NetServer()
-	{
-	}
+	public Thread thread;
+	
+	private int port = -1;
+	private boolean hasRouter;
+	
+	public NetServer() { }
 	
 	public void open(InetAddress ip, int port)
 	{
@@ -28,35 +33,68 @@ public class NetServer
 		}
 	}
 	
-	public void open(boolean hasRouter, int port)
+	public void open(int p, boolean b)
 	{
-		try
-		{
-			waitingClient = EnumStatus.WAITING;
-			open(hasRouter ? InetAddress.getLocalHost() : null, port);
-		}
-		catch(Exception e)
-		{
-			waitingClient = EnumStatus.FAILED;
-		}
+		port = p;
+		hasRouter = b;
+		thread = new Thread(this, "NetServer");
+		thread.start();
 	}
 	
-	public void waitForClient()
+	public void run()
 	{
-		waitingClient = EnumStatus.WAITING;
-		
 		try
 		{
-			Socket s = serverSocket.accept();
-			client = new NetClient();
-			client.connect(s);
+			if(port != -1)
+			{
+				try
+				{
+					waitingClient = EnumStatus.WAITING;
+					open(hasRouter ? InetAddress.getLocalHost() : null, port);
+					waitingClient = EnumStatus.SUCCESS;
+				}
+				catch(Exception e)
+				{
+					waitingClient = EnumStatus.FAILED;
+				}
+			}
 			
-			waitingClient = EnumStatus.SUCCESS;
+			waitingClient = EnumStatus.WAITING;
+			
+			try
+			{
+				Socket s = serverSocket.accept();
+				client = new NetClient();
+				client.connect(s);
+				
+				waitingClient = EnumStatus.SUCCESS;
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				waitingClient = EnumStatus.FAILED;
+			}
 		}
 		catch(Exception e)
-		{
-			e.printStackTrace();
-			waitingClient = EnumStatus.FAILED;
-		}
+		{ e.printStackTrace(); }
+		
+		thread = null;
 	}
+	
+	public void stop()
+	{
+		thread = null;
+		
+		client.stop();
+		client = null;
+		
+		try { if(serverSocket != null) serverSocket.close(); }
+		catch(Exception e) {} serverSocket = null;
+	}
+	
+	public NetClient getClient()
+	{ return client; }
+
+	public EnumStatus getConnectionStatus()
+	{ return waitingClient; }
 }

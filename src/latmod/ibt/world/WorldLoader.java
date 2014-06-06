@@ -24,6 +24,9 @@ public class WorldLoader
 	
 	public static boolean loadWorldFromJson(World w, String json, int[] pixels)
 	{
+		w.load_json = json;
+		w.load_pixels = pixels;
+		
 		WorldLoader wl = LatCore.getJson(json, WorldLoader.class);
 		
 		w.worldName = wl.name;

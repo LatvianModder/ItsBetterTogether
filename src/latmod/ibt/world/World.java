@@ -1,17 +1,21 @@
 package latmod.ibt.world;
 import java.util.*;
-
 import latmod.core.util.*;
 import latmod.core.util.Timer;
 import latmod.ibt.blocks.*;
 import latmod.ibt.entity.*;
+import latmod.ibt.net.*;
 import latmod.ibt.tiles.*;
 
-public class World
+public abstract class World
 {
 	public static World inst = null;
 	
+	public final INet net;
 	public final WorldRenderer renderer;
+	
+	public String load_json = null;
+	public int load_pixels[] = null;
 	
 	public String worldName;
 	public int width = 1, height = 1;
@@ -30,8 +34,10 @@ public class World
 	public int[] powerNetwork;
 	public FastList<IPowerProvider> powerProviders;
 
-	public World()
+	public World(INet i)
 	{
+		net = i;
+		
 		renderer = new WorldRenderer(this);
 		extraArgs = new FastMap<String, String>();
 		
@@ -187,4 +193,16 @@ public class World
 	public void onClosed()
 	{
 	}
+	
+	public WorldServer getServer()
+	{ return (WorldServer)this; }
+	
+	public WorldClient getClient()
+	{ return (WorldClient)this; }
+
+	public NetServer getNetServer()
+	{ return (NetServer)net; }
+	
+	public NetClient getNetClient()
+	{ return (NetClient)net; }
 }
