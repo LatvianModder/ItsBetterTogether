@@ -1,8 +1,10 @@
 package latmod.ibt.entity;
 import org.lwjgl.input.*;
+
 import latmod.core.rendering.*;
 import latmod.core.util.*;
 import latmod.ibt.*;
+import latmod.ibt.gui.GuiComplete;
 import latmod.ibt.world.*;
 
 public class EntityPlayerSP extends EntityPlayer // Entity
@@ -33,27 +35,43 @@ public class EntityPlayerSP extends EntityPlayer // Entity
 		Font.inst.drawText(4, 4 + i * 20, txt.get(i));
 	}
 	
+	public void onRender()
+	{
+		super.onRender();
+	}
+	
 	public void onUpdate(Timer t)
 	{
-		double speed = 0.1D;
+		double speed = 0.075D;
 		
 		if(Main.inst.getGui().allowPlayerInput())
 		{
-			if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) speed *= 1.7D;
-			else if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) speed *= 0.3D;
-			
-			if(Keyboard.isKeyDown(Keyboard.KEY_W)) move(0D, -1D, speed);
-			if(Keyboard.isKeyDown(Keyboard.KEY_S)) move(0D, 1D, speed);
-			if(Keyboard.isKeyDown(Keyboard.KEY_A)) move(-1D, 0D, speed);
-			if(Keyboard.isKeyDown(Keyboard.KEY_D)) move(1D, 0D, speed);
+			if(Mouse.isButtonDown(0))
+			{
+				if(isCamera())
+				move(Main.inst.mouseX - Main.inst.cameraEntity.posX, Main.inst.mouseY - Main.inst.cameraEntity.posY, speed);
+				else if(worldObj.playerMP.isCamera())
+				{
+					worldObj.playerMP.move(Main.inst.mouseX - worldObj.playerMP.posX, Main.inst.mouseY - worldObj.playerMP.posY, speed);
+					worldObj.playerMP.moveEntity();
+				}
+			}
 		}
 		
 		moveEntity();
+		
+		if(worldObj.isPlayerAtEnd(this) && worldObj.isPlayerAtEnd(worldObj.playerMP))
+		Main.inst.openGui(new GuiComplete());
 	}
 	
 	public void keyPressed(int key)
 	{
 		if(key == GameOptions.KEY_DEBUG.key)
 			debug = !debug;
+		if(key == GameOptions.KEY_CAMERA.key)
+		{
+			if(!isCamera()) setAsCamera();
+			else worldObj.playerMP.setAsCamera();
+		}
 	}
 }

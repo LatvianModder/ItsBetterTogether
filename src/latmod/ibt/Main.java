@@ -1,13 +1,12 @@
 package latmod.ibt;
 import java.io.InputStream;
 import java.util.logging.Logger;
-
 import org.lwjgl.input.*;
-
 import latmod.core.input.*;
 import latmod.core.rendering.*;
 import latmod.core.util.*;
 import latmod.ibt.blocks.*;
+import latmod.ibt.entity.*;
 import latmod.ibt.gui.*;
 import latmod.ibt.tiles.TileRegistry;
 import latmod.ibt.world.*;
@@ -25,6 +24,7 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 	
 	private GuiBasic openedGui = null;
 	
+	public Entity cameraEntity = null;
 	public double mouseX, mouseY;
 	
 	public void onLoaded()
@@ -64,13 +64,15 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 		Renderer.enter2D();
 		Renderer.disableTexture();
 		
-		if(World.inst != null && World.inst.playerSP != null)
+		if(World.inst != null)
 		{
-			mouseX = (mouse.x - width / 2D) / zoom + World.inst.playerSP.posX;
-			mouseY = (mouse.y - height / 2D) / zoom + World.inst.playerSP.posY;
+			if(cameraEntity == null) cameraEntity = World.inst.playerSP;
+			
+			mouseX = (mouse.x - width / 2D) / zoom + cameraEntity.posX;
+			mouseY = (mouse.y - height / 2D) / zoom + cameraEntity.posY;
 			
 			Renderer.push();
-			Renderer.translate(-(World.inst.playerSP.posX * zoom - width / 2D), -(World.inst.playerSP.posY * zoom - height / 2D));
+			Renderer.translate(-(cameraEntity.posX * zoom - width / 2D), -(cameraEntity.posY * zoom - height / 2D));
 			Renderer.scale(zoom, zoom, 1D);
 			
 			World.inst.renderer.onRender();
@@ -172,5 +174,12 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 	
 	public void joinGame(String ip)
 	{
+	}
+	
+	public void closeGame()
+	{
+		World.inst.onClosed();
+		World.inst = null;
+		openGui(null);
 	}
 }

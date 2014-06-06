@@ -1,5 +1,6 @@
 package latmod.ibt.entity;
 import latmod.core.util.*;
+import latmod.ibt.Main;
 import latmod.ibt.blocks.*;
 import latmod.ibt.world.*;
 
@@ -39,6 +40,12 @@ public class Entity
 	{
 	}
 	
+	public boolean isCamera()
+	{ return Main.inst.cameraEntity == this; }
+	
+	public void setAsCamera()
+	{ Main.inst.cameraEntity = this; }
+	
 	public void setPos(double x, double y)
 	{
 		posX = x;
@@ -77,6 +84,7 @@ public class Entity
 			if(motX != 0D)
 			{
 				posX += motX;
+				updateCollisionBox();
 				motX = 0D;
 				isDirty = true;
 			}
@@ -99,12 +107,11 @@ public class Entity
 			if(motY != 0D)
 			{
 				posY += motY;
+				updateCollisionBox();
 				motY = 0D;
 				isDirty = true;
 			}
 		}
-		
-		updateCollisionBox();
 	}
 	
 	public void readEntity(DataIOStream dios) throws Exception

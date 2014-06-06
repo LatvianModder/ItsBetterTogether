@@ -19,14 +19,7 @@ public class GameOptions
 	public static KeyBinding KEY_CHAT = new KeyBinding("player.chat", Keyboard.KEY_SLASH);
 	public static KeyBinding KEY_HIDE_GUI = new KeyBinding("player.hideGui", Keyboard.KEY_F1);
 	public static KeyBinding KEY_DEBUG = new KeyBinding("player.debug", Keyboard.KEY_F3);
-	public static KeyBinding KEY_TEST = new KeyBinding("player.test", Keyboard.KEY_B);
-	
-	public static KeyBinding KEY_MOVE_UP = new KeyBinding("player.move.up", Keyboard.KEY_W);
-	public static KeyBinding KEY_MOVE_DOWN = new KeyBinding("player.move.down", Keyboard.KEY_S);
-	public static KeyBinding KEY_MOVE_LEFT = new KeyBinding("player.move.left", Keyboard.KEY_A);
-	public static KeyBinding KEY_MOVE_RIGHT = new KeyBinding("player.move.right", Keyboard.KEY_D);
-	public static KeyBinding KEY_MOVE_SPRINT = new KeyBinding("player.move.sprint", Keyboard.KEY_LSHIFT);
-	public static KeyBinding KEY_MOVE_SNEAK = new KeyBinding("player.move.sneak", Keyboard.KEY_LCONTROL);
+	public static KeyBinding KEY_CAMERA = new KeyBinding("player.camera", Keyboard.KEY_TAB);
 	
 	public static FastMap<String, KeyBinding> keyBindings = new FastMap<String, KeyBinding>();
 	
@@ -48,14 +41,7 @@ public class GameOptions
 			KEY_CHAT.register();
 			KEY_HIDE_GUI.register();
 			KEY_DEBUG.register();
-			KEY_TEST.register();
-			
-			KEY_MOVE_UP.register();
-			KEY_MOVE_DOWN.register();
-			KEY_MOVE_LEFT.register();
-			KEY_MOVE_RIGHT.register();
-			KEY_MOVE_SPRINT.register();
-			KEY_MOVE_SNEAK.register();
+			KEY_CAMERA.register();
 		}
 		catch(Exception e)
 		{ e.printStackTrace(); }

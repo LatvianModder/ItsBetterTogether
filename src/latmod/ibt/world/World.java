@@ -183,4 +183,8 @@ public class World
 		Block b = getBlock(x, y);
 		return (b != null && b.isSolidFor(this, (int)x, (int)y, null));
 	}
+	
+	public void onClosed()
+	{
+	}
 }

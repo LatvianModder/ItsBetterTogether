@@ -19,7 +19,9 @@ public class TileButton extends TileEntity implements IPowerProvider
 	
 	public void onUpdate(Timer t)
 	{
-		isPressed = collisionBox.isColliding(worldObj.playerSP.collisionBox, 0D, 0D);
+		boolean b = isPressed;
+		isPressed = collisionBox.isColliding(worldObj.playerSP.collisionBox, 0D, 0D) || collisionBox.isColliding(worldObj.playerMP.collisionBox, 0D, 0D);
+		if(b != isPressed) isDirty = true;
 	}
 	
 	public void onRender()
@@ -41,12 +43,14 @@ public class TileButton extends TileEntity implements IPowerProvider
 	{
 		freq = dios.readByte();
 		color = Color.get(dios.readInt());
+		isPressed = dios.readBoolean();
 	}
 	
 	public void writeTile(DataIOStream dios) throws Exception
 	{
 		dios.writeByte(freq);
 		dios.writeInt(color.hex);
+		dios.writeBoolean(isPressed);
 	}
 
 	public int getFreq()
