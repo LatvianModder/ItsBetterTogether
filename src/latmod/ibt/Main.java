@@ -12,7 +12,7 @@ import latmod.ibt.gui.*;
 import latmod.ibt.tiles.TileRegistry;
 import latmod.ibt.world.*;
 
-public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListener.Pressed
+public class Main extends LMFrame implements IMouseListener.Scrolled, IMouseListener.Pressed, IKeyListener.Pressed
 {
 	public static FastMap<String, String> mainArgs;
 	public static Main inst = null;
@@ -151,6 +151,22 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 		World.inst.onUpdate(t);
 	}
 	
+	public void onMouseScrolled(LMMouse m)
+	{
+		if(m.scroll < 0) zoom *= 0.5D;
+		else zoom *= 2D;
+		
+		if(zoom > 256D) zoom = 256D;
+		if(zoom < 8D) zoom = 8D;
+	}
+	
+	public Cancel onMousePressed(LMMouse m)
+	{
+		if(openedGui.allowPlayerInput() && World.inst != null && World.inst.playerSP != null)
+			World.inst.playerSP.mousePressed(m);
+		return Cancel.FALSE;
+	}
+	
 	public Cancel onKeyPressed(int key, char keyChar)
 	{
 		if(key == Keyboard.KEY_ESCAPE)
@@ -202,15 +218,6 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IKeyListen
 	
 	public GuiBasic getGui()
 	{ return openedGui; }
-	
-	public void onMouseScrolled(LMMouse m)
-	{
-		if(m.scroll < 0) zoom *= 0.5D;
-		else zoom *= 2D;
-		
-		if(zoom > 256D) zoom = 256D;
-		if(zoom < 8D) zoom = 8D;
-	}
 	
 	public void hostGame(InputStream json, InputStream png, int port, boolean router)
 	{

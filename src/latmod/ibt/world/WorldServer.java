@@ -16,5 +16,7 @@ public class WorldServer extends World
 		dios.writeInt(load_pixels.length);
 		for(int i = 0; i < load_pixels.length; i++)
 			dios.writeInt(load_pixels[i]);
+		
+		dios.writeString(playerSP.username);
 	}
 }

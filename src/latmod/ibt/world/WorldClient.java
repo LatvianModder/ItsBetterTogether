@@ -9,6 +9,11 @@ public class WorldClient extends World
 		super(new NetClient());
 	}
 	
+	public void onUpdate(Timer t)
+	{
+		playerSP.onUpdate(t);
+	}
+	
 	public void readWorld(DataIOStream dios) throws Exception
 	{
 		load_json = dios.readString();
@@ -18,5 +23,7 @@ public class WorldClient extends World
 			load_pixels[i] = dios.readInt();
 		
 		WorldLoader.loadWorldFromJson(this, load_json, load_pixels);
+		
+		playerMP.username = dios.readString();
 	}
 }

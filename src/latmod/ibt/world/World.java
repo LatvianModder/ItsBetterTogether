@@ -7,7 +7,7 @@ import latmod.ibt.entity.*;
 import latmod.ibt.net.*;
 import latmod.ibt.tiles.*;
 
-public abstract class World
+public abstract class World // WorldClient // WorldServer
 {
 	public static World inst = null;
 	

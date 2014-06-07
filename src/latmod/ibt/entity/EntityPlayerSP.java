@@ -46,22 +46,27 @@ public class EntityPlayerSP extends EntityPlayer // Entity
 		
 		if(Main.inst.getGui().allowPlayerInput())
 		{
+			double arot = Math.atan2(Main.inst.mouseX - posX, Main.inst.mouseY - posY) * MathHelper.DEG;
+			double d = 360D / 16D;
+			rotation = ((long)(arot / d)) * d;
+			
 			if(Mouse.isButtonDown(0))
-			{
-				if(isCamera())
-				move(Main.inst.mouseX - Main.inst.cameraEntity.posX, Main.inst.mouseY - Main.inst.cameraEntity.posY, speed);
-				else if(worldObj.playerMP.isCamera())
-				{
-					worldObj.playerMP.move(Main.inst.mouseX - worldObj.playerMP.posX, Main.inst.mouseY - worldObj.playerMP.posY, speed);
-					worldObj.playerMP.moveEntity();
-				}
-			}
+			move(MathHelper.sin(rotation * MathHelper.RAD), MathHelper.cos(rotation * MathHelper.RAD), speed);
 		}
 		
 		moveEntity();
 		
 		if(worldObj.isPlayerAtEnd(this) && worldObj.isPlayerAtEnd(worldObj.playerMP))
 		Main.inst.openGui(new GuiComplete());
+	}
+	
+	public void mousePressed(LMMouse m)
+	{
+		if(m.button == 1)
+		{
+			if(!isCamera()) setAsCamera();
+			else worldObj.playerMP.setAsCamera();
+		}
 	}
 	
 	public void keyPressed(int key)

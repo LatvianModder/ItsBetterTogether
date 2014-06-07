@@ -32,10 +32,12 @@ public class EntityPlayer extends Entity
 	public void readEntity(DataIOStream dios) throws Exception
 	{
 		super.readEntity(dios);
+		color = Color.get(dios.readInt(), 255);
 	}
 	
 	public void writeEntity(DataIOStream dios) throws Exception
 	{
 		super.writeEntity(dios);
+		dios.writeInt(color.hex);
 	}
 }
