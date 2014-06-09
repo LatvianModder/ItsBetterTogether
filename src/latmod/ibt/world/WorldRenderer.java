@@ -1,9 +1,9 @@
 package latmod.ibt.world;
 import latmod.core.rendering.*;
-import latmod.core.util.MathHelper;
-import latmod.ibt.GameOptions;
-import latmod.ibt.blocks.Block;
-import latmod.ibt.tiles.TileEntity;
+import latmod.core.util.*;
+import latmod.ibt.*;
+import latmod.ibt.blocks.*;
+import latmod.ibt.tiles.*;
 
 public class WorldRenderer
 {
@@ -32,6 +32,8 @@ public class WorldRenderer
 	
 	public void onRender()
 	{
+		if(!worldObj.canUpdate()) return;
+		
 		Renderer.enableTexture();
 		
 		Renderer.setTexture(texBG);
@@ -61,6 +63,20 @@ public class WorldRenderer
 		worldObj.playerMP.onRender();
 		
 		renderLighting();
+	}
+	
+	public void onUpdate(Timer t)
+	{
+		/*
+		for(int i = 0; i < particles.size(); i++)
+		particles.get(i).onUpdate(t);
+		
+		for(int i = 0; i < particles.size(); i++)
+		{
+			if(particles.get(i).isDead())
+			particles.remove(i);
+		}
+		*/
 	}
 	
 	public void renderLighting()

@@ -11,7 +11,7 @@ public class Entity
 	public double radius;
 	public double rotation = 0D;
 	public boolean isDirty = true;
-	public boolean isDead = false;
+	private boolean isDead = false;
 	public CollisionBox collisionBox;
 	
 	public Entity(World w)
@@ -35,6 +35,9 @@ public class Entity
 	
 	public void setDead()
 	{ isDead = isDirty = true; }
+	
+	public boolean isDead()
+	{ return isDead; }
 	
 	public void onRender()
 	{

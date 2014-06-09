@@ -6,4 +6,5 @@ public interface INet
 {
 	public NetClient getClient();
 	public EnumStatus getConnectionStatus();
+	public void stop();
 }

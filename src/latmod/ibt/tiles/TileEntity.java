@@ -8,7 +8,7 @@ public abstract class TileEntity
 	public final World worldObj;
 	public int posX, posY;
 	public Block type = null;
-	public boolean isDirty = true;
+	public boolean isDirty = false;
 	
 	public TileEntity(World w)
 	{

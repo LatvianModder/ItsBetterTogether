@@ -20,10 +20,12 @@ public abstract class Packet
 		Main.logger.info(s);
 	}
 	
+	public String toString()
+	{ return getClass().getSimpleName(); }
+	
 	// -- Static -- //
 	
-	@SuppressWarnings("all")
-	public static final Class[] packetMap = new Class[256];
+	public static final Packet[] packetMap = new Packet[256];
 	
 	public static final int ID_NONE = 0;
 	public static final int ID_CHAT = 1;
@@ -35,43 +37,20 @@ public abstract class Packet
 	public static final int ID_ENTITY_UPDATE = 7;
 	public static final int ID_ENTITY_DESTROYED = 8;
 	
-	public static void addPacket(Class<? extends Packet> c)
+	public static void addPacket(Packet p)
 	{
-		try
-		{
-			Packet p = (Packet) c.newInstance();
-			int pid = p.packetID;
-			
-			if(pid > 0 && pid < packetMap.length)
-			{
-				if(packetMap[pid] == null)
-				packetMap[pid] = c;
-				else Main.logger.info("PacketID " + pid + " for " + c.getSimpleName() + " already occuped by " + packetMap[pid].getSimpleName());
-			}
-			else Main.logger.info("Invalid PacketID " + pid + " for " + c.getSimpleName());
-		}
-		catch(Exception e)
-		{ e.printStackTrace(); }
+		if(packetMap[p.packetID] == null) packetMap[p.packetID] = p;
+		else Main.logger.info("PacketID " + p.packetID + " for " + p + " already occuped by " + packetMap[p.packetID]);
 	}
 	
 	public static void loadPackets()
 	{
-		addPacket(PacketPlayerUpdate.class);
-		addPacket(PacketPlayerDied.class);
-		addPacket(PacketTileUpdate.class);
-		//addPacket(PacketEntityCreated.class);
-		//addPacket(PacketEntityUpdate.class);
-		//addPacket(PacketEntityDestroyed.class);
+		addPacket(new PacketChat(null));
+		addPacket(new PacketPlayerUpdate());
+		addPacket(new PacketPlayerDied());
+		addPacket(new PacketTileUpdate(null));
 	}
 	
 	public static Packet createPacket(int i)
-	{
-		if(i <= 0 || i >= packetMap.length) return null;
-		
-		try { return (Packet) packetMap[i].newInstance(); }
-		catch(Exception e)
-		{ e.printStackTrace(); }
-		
-		return null;
-	}
+	{ return (i <= 0 || i >= packetMap.length) ? null : packetMap[i]; }
 }

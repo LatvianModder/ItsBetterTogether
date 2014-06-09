@@ -13,6 +13,7 @@ public abstract class World // WorldClient // WorldServer
 	
 	public final INet net;
 	public final WorldRenderer renderer;
+	public final PacketHandler packetHandler;
 	
 	public String load_json = null;
 	public int load_pixels[] = null;
@@ -37,8 +38,9 @@ public abstract class World // WorldClient // WorldServer
 	public World(INet i)
 	{
 		net = i;
-		
 		renderer = new WorldRenderer(this);
+		packetHandler = new PacketHandler(this);
+		
 		extraArgs = new FastMap<String, String>();
 		
 		blocks = new FastMap<Integer, Block>();
@@ -58,6 +60,8 @@ public abstract class World // WorldClient // WorldServer
 	
 	public void onUpdate(Timer t)
 	{
+		if(!canUpdate()) return;
+		
 		collisionBoxes.clear();
 		
 		for(int i = 0; i < blocks.size(); i++)
@@ -77,10 +81,19 @@ public abstract class World // WorldClient // WorldServer
 		if(i.isProvidingPower()) powerNetwork[i.getFreq()]++;
 		
 		for(TileEntity te : tiles)
-		te.onUpdate(t);
+		{
+			te.onUpdate(t);
+			
+			if(te.isDirty)
+			{
+				te.isDirty = false;
+				packetHandler.sendPacket(new PacketTileUpdate(te));
+			}
+		}
 		
 		playerSP.onUpdate(t);
 		playerMP.onUpdate(t);
+		renderer.onUpdate(t);
 	}
 	
 	public int getX(int index)
@@ -192,6 +205,7 @@ public abstract class World // WorldClient // WorldServer
 	
 	public void onClosed()
 	{
+		net.stop();
 	}
 	
 	public WorldServer getServer()
@@ -205,4 +219,7 @@ public abstract class World // WorldClient // WorldServer
 	
 	public NetClient getNetClient()
 	{ return (NetClient)net; }
+	
+	public boolean canUpdate()
+	{ return true; }
 }

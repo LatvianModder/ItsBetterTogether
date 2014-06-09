@@ -2,13 +2,16 @@ package latmod.ibt;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.logging.Logger;
+
 import org.lwjgl.input.*;
+
 import latmod.core.input.*;
 import latmod.core.rendering.*;
 import latmod.core.util.*;
 import latmod.ibt.blocks.*;
 import latmod.ibt.entity.*;
 import latmod.ibt.gui.*;
+import latmod.ibt.net.Packet;
 import latmod.ibt.tiles.TileRegistry;
 import latmod.ibt.world.*;
 
@@ -25,6 +28,7 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IMouseList
 	
 	private GuiBasic openedGui = null;
 	private String usernameOverride = null;
+	private String colorOverride = null;
 	
 	public Entity cameraEntity = null;
 	public double mouseX, mouseY;
@@ -32,6 +36,13 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IMouseList
 	public void onLoaded()
 	{
 		LatCore.setProjectName("ItsBetterTogether");
+		
+		String widthS = mainArgs.get("-width");
+		if(widthS != null) width = Integer.parseInt(widthS);
+		
+		String heightS = mainArgs.get("-height");
+		if(heightS != null) height = Integer.parseInt(heightS);
+		
 		super.onLoaded();
 		logger.setParent(LatCore.logger);
 		
@@ -91,15 +102,19 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IMouseList
 			if(json != null && png != null)
 				hostGame(json, png, port, router);
 		}
-		else if(mainArgs.keys.contains("-join"))
+		else if(args.keys.contains("-join"))
 		{
-			String ip = mainArgs.get("-join");
+			String ip = args.get("-join");
 			String portS = args.get("-port");
 			int port = (portS == null) ? GameOptions.DEF_PORT : Integer.parseInt(portS);
-			joinGame(ip, port);
+			
+			World.inst = new WorldClient();
+			World.inst.postInit();
+			openGui(new GuiJoinWait(ip, port));
 		}
 		
-		usernameOverride = mainArgs.get("-username");
+		usernameOverride = args.get("-username");
+		colorOverride = args.get("-color");
 	}
 	
 	public void executeArguments(String... args)
@@ -109,10 +124,15 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IMouseList
 	{ if(usernameOverride != null) return usernameOverride;
 	return GameOptions.props.username; }
 	
+	public String getPlayerColor()
+	{ if(colorOverride != null) return colorOverride;
+	return GameOptions.props.playerColor; }
+	
 	public void loadGame()
 	{
 		GameOptions.loadOptions();
 		TileRegistry.loadTiles();
+		Packet.loadPackets();
 		
 		for(Block b : Block.blockMap)
 		b.reloadTextures();
@@ -123,7 +143,7 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IMouseList
 		Renderer.enter2D();
 		Renderer.disableTexture();
 		
-		if(World.inst != null)
+		if(World.inst != null && World.inst.canUpdate())
 		{
 			if(cameraEntity == null) cameraEntity = World.inst.playerSP;
 			
@@ -151,42 +171,39 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IMouseList
 		World.inst.onUpdate(t);
 	}
 	
-	public void onMouseScrolled(LMMouse m)
+	public void onMouseScrolled(EventMouse.Scrolled e)
 	{
-		if(m.scroll < 0) zoom *= 0.5D;
+		if(e.scroll < 0) zoom *= 0.5D;
 		else zoom *= 2D;
 		
 		if(zoom > 256D) zoom = 256D;
 		if(zoom < 8D) zoom = 8D;
 	}
 	
-	public Cancel onMousePressed(LMMouse m)
+	public void onMousePressed(EventMouse.Pressed e)
 	{
 		if(openedGui.allowPlayerInput() && World.inst != null && World.inst.playerSP != null)
-			World.inst.playerSP.mousePressed(m);
-		return Cancel.FALSE;
+			World.inst.playerSP.mousePressed(e);
 	}
 	
-	public Cancel onKeyPressed(int key, char keyChar)
+	public void onKeyPressed(EventKey.Pressed e)
 	{
-		if(key == Keyboard.KEY_ESCAPE)
+		if(e.key == Keyboard.KEY_ESCAPE)
 		{
 			if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 			destroy(); else openedGui.onEscPressed();
-			return Cancel.TRUE;
+			e.cancel();
 		}
-		else if(key == GameOptions.KEY_SCREENSHOT.key)
+		else if(e.key == GameOptions.KEY_SCREENSHOT.key)
 		{
 			Renderer.takeScreenshot();
-			return Cancel.TRUE;
+			e.cancel();
 		}
 		else
 		{
 			if(openedGui.allowPlayerInput() && World.inst != null && World.inst.playerSP != null)
-				World.inst.playerSP.keyPressed(key);
+				World.inst.playerSP.keyPressed(e);
 		}
-		
-		return Cancel.FALSE;
 	}
 	
 	public void openGui(GuiBasic g)
@@ -230,13 +247,6 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IMouseList
 	{
 		World.inst = new WorldServer();
 		WorldLoader.loadWorldFromJson(World.inst, json, pixels);
-		openGui(null);
-	}
-	
-	public void joinGame(String ip, int port)
-	{
-		World.inst = new WorldClient();
-		World.inst.postInit();
 		openGui(null);
 	}
 	

@@ -7,12 +7,9 @@ public class PacketTileUpdate extends Packet
 {
 	public TileEntity tile;
 	
-	public PacketTileUpdate()
-	{ super(ID_TILE_UPDATE); }
-	
 	public PacketTileUpdate(TileEntity te)
 	{
-		this();
+		super(ID_TILE_UPDATE);
 		tile = te;
 	}
 	

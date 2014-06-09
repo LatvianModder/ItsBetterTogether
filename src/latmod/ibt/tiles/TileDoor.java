@@ -43,20 +43,22 @@ public class TileDoor extends TileEntity
 	
 	public void readTile(DataIOStream dios) throws Exception
 	{
-		freq = dios.readByte();
 		horizontal = dios.readBoolean();
 		color = Color.get(dios.readInt());
-		requredButtonCount = dios.readByte();
+		isOpen = dios.readBoolean();
 	}
 	
 	public void writeTile(DataIOStream dios) throws Exception
 	{
-		dios.writeByte(freq);
 		dios.writeBoolean(horizontal);
 		dios.writeInt(color.hex);
-		dios.writeByte(requredButtonCount);
+		dios.writeBoolean(isOpen);
 	}
 	
 	public void onUpdate(Timer t)
-	{ isOpen = worldObj.powerNetwork[freq] >= requredButtonCount; }
+	{
+		boolean po = isOpen;
+		isOpen = worldObj.powerNetwork[freq] >= requredButtonCount;
+		if(isOpen != po) isDirty = true;
+	}
 }

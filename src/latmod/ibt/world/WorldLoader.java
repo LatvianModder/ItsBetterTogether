@@ -102,18 +102,21 @@ public class WorldLoader
 		return Color.get(i, 255).hex;
 	}
 	
-	public static void loadWorldFromStream(World w, InputStream json, InputStream image)
+	public static void loadWorldFromStream(World w, InputStream json, InputStream png)
 	{
 		try
 		{
 			byte[] b = new byte[json.available()];
 			json.read(b);
 			
-			BufferedImage img = ImageIO.read(image);
+			BufferedImage img = ImageIO.read(png);
 			int[] pixels = Renderer.getPixels(img);
 			loadWorldFromJson(w, new String(b), pixels);
 		}
 		catch(Exception e)
 		{ e.printStackTrace(); }
 	}
+	
+	public static void loadWorldFromLocalStream(World w, String s)
+	{ loadWorldFromStream(w, WorldLoader.class.getResourceAsStream(s + ".json"), WorldLoader.class.getResourceAsStream(s + ".png")); }
 }

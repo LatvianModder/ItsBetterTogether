@@ -1,9 +1,9 @@
 package latmod.ibt.net;
-
 import java.net.*;
 
 import latmod.core.util.*;
-import latmod.ibt.GameOptions;
+import latmod.ibt.*;
+import latmod.ibt.world.*;
 
 public class NetClient implements Runnable, INet
 {
@@ -24,38 +24,55 @@ public class NetClient implements Runnable, INet
 	{
 		connectIP = ip;
 		connectPort = port;
+		connecting = EnumStatus.WAITING;
 		thread = new Thread(this, "NetClient");
 		thread.start();
-		connecting = EnumStatus.WAITING;
 	}
 	
-	public void connect(Socket s)
+	public void connect(Socket s) throws Exception
 	{
-		socket = s;
 		connecting = EnumStatus.WAITING;
+		socket = s;
+		data = new DataIOStream(socket.getInputStream(), socket.getOutputStream());
+		thread = new Thread(this, "NetServerClient");
+		thread.start();
+		connecting = EnumStatus.SUCCESS;
 	}
 	
 	public void run()
 	{
 		try
 		{
-			connecting = EnumStatus.WAITING;
-			
 			if(socket == null)
-			socket = new Socket(connectIP, connectPort);
-			
-			data = new DataIOStream(socket.getInputStream(), socket.getOutputStream());
-			thread = new Thread(this, "NetClient");
-			
-			connecting = EnumStatus.SUCCESS;
-			
-			while(Thread.currentThread() == thread)
 			{
+				connecting = EnumStatus.WAITING;
+				socket = new Socket(connectIP, connectPort);
+				data = new DataIOStream(socket.getInputStream(), socket.getOutputStream());
+				connecting = EnumStatus.SUCCESS;
+				
+				while(data.available() <= 0);
+				
+				World.inst.getClient().readWorld(data);
+				World.inst.getClient().writeWorld(data);
+				data.flush();
+				
+				World.inst.getClient().worldLoaded = true;
+				Main.inst.openGui(null);
+			}
+			
+			Thread.sleep(10);
+			
+			while(thread != null)
+			{
+				World.inst.packetHandler.update(this);
+				Thread.sleep(4);
 			}
 		}
 		catch(Exception e)
 		{
 			connecting = EnumStatus.FAILED;
+			
+			e.printStackTrace();
 		}
 		
 		stop();

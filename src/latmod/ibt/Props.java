@@ -10,6 +10,7 @@ public class Props
 	@Expose public String lastIP;
 	@Expose public Boolean hasRouter;
 	@Expose public Integer lastServerPort;
+	@Expose public String playerColor;
 	
 	public void setDefaults()
 	{
@@ -20,5 +21,6 @@ public class Props
 		if(lastIP == null) lastIP = "127.0.0.1";
 		if(hasRouter == null) hasRouter = false;
 		if(lastServerPort == null) lastServerPort = GameOptions.DEF_PORT;
+		if(playerColor == null) playerColor = "0094FF";
 	}
 }

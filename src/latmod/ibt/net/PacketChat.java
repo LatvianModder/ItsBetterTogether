@@ -7,11 +7,8 @@ public class PacketChat extends Packet
 {
 	public String text;
 	
-	public PacketChat()
-	{ super(ID_CHAT); }
-	
 	public PacketChat(String s)
-	{ this(); text = s; }
+	{ super(ID_CHAT); text = s; }
 	
 	public void writePacket(World w, DataIOStream dios) throws Exception
 	{

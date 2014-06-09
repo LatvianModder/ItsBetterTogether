@@ -9,10 +9,10 @@ public class EntityPlayerMP extends EntityPlayer
 	{
 		super(w);
 		color = Color.RED;
-		username = "Testificate";
 	}
 	
 	public void onUpdate(Timer t)
 	{
+		updateCollisionBox();
 	}
 }

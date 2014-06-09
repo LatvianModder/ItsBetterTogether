@@ -3,6 +3,8 @@ import latmod.core.gui.*;
 import latmod.core.util.TwoObjects;
 import latmod.ibt.*;
 import latmod.ibt.net.NetClient;
+import latmod.ibt.world.World;
+import latmod.ibt.world.WorldClient;
 
 public class GuiJoin extends GuiBasic
 {
@@ -29,7 +31,9 @@ public class GuiJoin extends GuiBasic
 		{
 			TwoObjects<String, Integer> ip = NetClient.toIpAddress(widgets.get(2).txt);
 			GameOptions.saveProps();
-			Main.inst.joinGame(ip.object1, ip.object2);
+			World.inst = new WorldClient();
+			World.inst.postInit();
+			Main.inst.openGui(new GuiJoinWait(ip.object1, ip.object2));
 		}
 		else if(i == 2 && event == TextBox.CHANGED)
 		{

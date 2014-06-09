@@ -7,6 +7,7 @@ public class EntityPlayer extends Entity
 {
 	public String username = null;
 	public Color color = Color.WHITE;
+	public double tarX, tarY;
 	
 	public EntityPlayer(World w)
 	{
