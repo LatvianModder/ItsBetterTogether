@@ -1,6 +1,7 @@
 package latmod.ibt.tiles;
 import latmod.core.rendering.*;
 import latmod.core.util.*;
+import latmod.ibt.Main;
 import latmod.ibt.blocks.*;
 import latmod.ibt.world.*;
 
@@ -27,7 +28,7 @@ public class TileButton extends TileEntity implements IPowerProvider
 	public void onRender()
 	{
 		color.set();
-		Renderer.setTexture(isPressed ? ((BlockButton)type).textureOn : type.blockTexture);
+		Main.inst.textureManager.setTexture(isPressed ? ((BlockButton)type).textureOn : type.blockTexture);
 		Renderer.rect(posX, posY, 1D, 1D);
 	}
 	

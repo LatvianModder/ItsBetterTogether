@@ -1,22 +1,16 @@
 package latmod.ibt.blocks;
-import latmod.core.rendering.*;
+import latmod.core.res.*;
 import latmod.ibt.entity.*;
 import latmod.ibt.tiles.*;
 import latmod.ibt.world.*;
 
 public class BlockButton extends Block implements ITileBlock
 {
-	public Texture textureOn;
+	public Resource textureOn = Resource.getTexture("blocks/buttonOn.png");
 	
 	public BlockButton(int i, String s)
 	{
 		super(i, s);
-	}
-	
-	public void reloadTextures()
-	{
-		super.reloadTextures();
-		textureOn = Renderer.getTexture("blocks/buttonOn.png");
 	}
 	
 	public boolean isVisible(World w, int x, int y)

@@ -4,7 +4,7 @@ import org.lwjgl.input.Keyboard;
 import latmod.core.gui.*;
 import latmod.core.input.*;
 import latmod.core.rendering.Font;
-import latmod.core.util.LatCore;
+import latmod.core.util.LMCommon;
 import latmod.ibt.Main;
 
 public class GuiChat extends GuiBasic implements IKeyListener.Pressed
@@ -42,7 +42,7 @@ public class GuiChat extends GuiBasic implements IKeyListener.Pressed
 		}
 		else
 		{
-			if(LatCore.isASCIIChar(e.keyChar))
+			if(LMCommon.isASCIIChar(e.keyChar))
 			{
 				text += e.keyChar;
 			}

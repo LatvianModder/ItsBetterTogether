@@ -1,5 +1,6 @@
 package latmod.ibt.world;
 import java.util.*;
+
 import latmod.core.util.*;
 import latmod.core.util.Timer;
 import latmod.ibt.blocks.*;
@@ -21,7 +22,7 @@ public abstract class World // WorldClient // WorldServer
 	public String worldName;
 	public int width = 1, height = 1;
 	public String backgroundTex = "bg/metal.png";
-	public FastMap<String, String> extraArgs;
+	public MainArgs extraArgs;
 	public int endPointSP, endPointMP;
 	
 	public FastMap<Integer, Block> blocks;
@@ -41,7 +42,7 @@ public abstract class World // WorldClient // WorldServer
 		renderer = new WorldRenderer(this);
 		packetHandler = new PacketHandler(this);
 		
-		extraArgs = new FastMap<String, String>();
+		extraArgs = new MainArgs(null);
 		
 		blocks = new FastMap<Integer, Block>();
 		tiles = new FastMap<Integer, TileEntity>();

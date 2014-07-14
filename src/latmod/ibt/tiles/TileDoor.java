@@ -1,6 +1,7 @@
 package latmod.ibt.tiles;
 import latmod.core.rendering.*;
 import latmod.core.util.*;
+import latmod.ibt.Main;
 import latmod.ibt.blocks.*;
 import latmod.ibt.world.*;
 
@@ -25,7 +26,7 @@ public class TileDoor extends TileEntity
 		{
 			texture.onRender(worldObj, posX, posY);
 			color.set();
-			Renderer.setTexture(type.blockTexture);
+			Main.inst.textureManager.setTexture(type.blockTexture);
 			Renderer.rect(posX, posY, 1D, 1D);
 		}
 	}

@@ -2,13 +2,10 @@ package latmod.ibt;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.logging.Logger;
-
 import org.lwjgl.input.*;
-
 import latmod.core.input.*;
 import latmod.core.rendering.*;
 import latmod.core.util.*;
-import latmod.ibt.blocks.*;
 import latmod.ibt.entity.*;
 import latmod.ibt.gui.*;
 import latmod.ibt.net.Packet;
@@ -17,11 +14,10 @@ import latmod.ibt.world.*;
 
 public class Main extends LMFrame implements IMouseListener.Scrolled, IMouseListener.Pressed, IKeyListener.Pressed
 {
-	public static FastMap<String, String> mainArgs;
 	public static Main inst = null;
-	public Main() { super(800, 600, 60); }
-	public String getTitle() { return "It's Better Together"; }
-	public static void main(String[] args) { mainArgs = LatCore.createArgs(args); inst = new Main(); }
+	public Main(String[] args) { super(args, 800, 600, 60); }
+	public static void main(String[] args)
+	{ inst = new Main(args); }
 	public static Logger logger = Logger.getLogger("Game");
 	
 	public double zoom = 64D;
@@ -37,17 +33,14 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IMouseList
 	{
 		LatCore.setProjectName("ItsBetterTogether");
 		
-		String widthS = mainArgs.get("-width");
-		if(widthS != null) width = Integer.parseInt(widthS);
-		
-		String heightS = mainArgs.get("-height");
-		if(heightS != null) height = Integer.parseInt(heightS);
+		width = mainArgs.getN("width", width).shortValue();
+		height = mainArgs.getN("height", height).shortValue();
 		
 		super.onLoaded();
 		logger.setParent(LatCore.logger);
 		
-		int s = LatCore.getAllClassesInDir(Main.class).size();
-		s += LatCore.getAllClassesInDir(LatCore.class).size();
+		int s = LMCommon.getAllClassesInDir(Main.class).size();
+		s += LMCommon.getAllClassesInDir(LMCommon.class).size();
 		
 		logger.info("Found totally " + s + " classes in this game");
 		
@@ -58,25 +51,25 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IMouseList
 		executeArguments(mainArgs);
 	}
 	
-	public void executeArguments(FastMap<String, String> args)
+	public void executeArguments(MainArgs args)
 	{
-		if(args.keys.contains("-host"))
+		if(args.has("host"))
 		{
-			boolean router = args.keys.contains("-router");
-			String portS = args.get("-port");
-			int port = (portS == null) ? GameOptions.DEF_PORT : Integer.parseInt(portS);
+			boolean router = args.getB("router", false);
+			int port = args.getN("port", GameOptions.DEF_PORT).intValue();
 			
 			InputStream json = null;
 			InputStream png = null;
 			
-			String stream = args.get("-levelStream");
+			String stream = args.getS("levelStream", null);
+			
 			if(stream != null)
 			{
 				json = WorldLoader.class.getResourceAsStream(stream + ".json");
 				png = WorldLoader.class.getResourceAsStream(stream + ".png");
 			}
 			
-			String url = args.get("-levelURL");
+			String url = args.getS("levelURL", null);
 			if(url != null)
 			{
 				try
@@ -88,7 +81,7 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IMouseList
 				{ e.printStackTrace(); json = png = null; }
 			}
 			
-			String gitHub = args.get("-levelGitHub");
+			String gitHub = args.getS("levelGitHub", null);
 			if(gitHub != null)
 			{
 				try
@@ -102,23 +95,19 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IMouseList
 			if(json != null && png != null)
 				hostGame(json, png, port, router);
 		}
-		else if(args.keys.contains("-join"))
+		else if(args.has("join"))
 		{
-			String ip = args.get("-join");
-			String portS = args.get("-port");
-			int port = (portS == null) ? GameOptions.DEF_PORT : Integer.parseInt(portS);
+			String ip = args.getS("join", "127.0.0.1");
+			int port = args.getN("port", GameOptions.DEF_PORT).intValue();
 			
 			World.inst = new WorldClient();
 			World.inst.postInit();
 			openGui(new GuiJoinWait(ip, port));
 		}
 		
-		usernameOverride = args.get("-username");
-		colorOverride = args.get("-color");
+		usernameOverride = args.getS("username", null);
+		colorOverride = args.getS("color", null);
 	}
-	
-	public void executeArguments(String... args)
-	{ executeArguments(LatCore.createArgs(args)); }
 	
 	public String getPlayerUsername()
 	{ if(usernameOverride != null) return usernameOverride;
@@ -133,9 +122,6 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IMouseList
 		GameOptions.loadOptions();
 		TileRegistry.loadTiles();
 		Packet.loadPackets();
-		
-		for(Block b : Block.blockMap)
-		b.reloadTextures();
 	}
 	
 	public void onRender()

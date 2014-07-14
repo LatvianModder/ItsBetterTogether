@@ -32,8 +32,8 @@ public class EntityPlayerSP extends EntityPlayer // Entity
 		if(debug)
 		{
 			txt.add("FPS: " + Main.inst.FPS + ", TPS: " + Main.inst.TPS);
-			txt.add("X, Y, R: " + LatCore.stripDouble(posX, posY, rotation));
-			txt.add("Mouse: " + LatCore.stripInt(Main.inst.mouseX, Main.inst.mouseY));
+			txt.add("X, Y, R: " + LMCommon.stripDouble(posX, posY, rotation));
+			txt.add("Mouse: " + LMCommon.stripInt(Main.inst.mouseX, Main.inst.mouseY));
 			txt.add("Packets sent: " + worldObj.packetHandler.packetsTX);
 			txt.add("Packets received: " + worldObj.packetHandler.packetsRX);
 		}

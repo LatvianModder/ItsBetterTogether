@@ -1,6 +1,8 @@
 package latmod.ibt.blocks;
 import latmod.core.rendering.*;
+import latmod.core.res.*;
 import latmod.core.util.*;
+import latmod.ibt.Main;
 import latmod.ibt.entity.*;
 import latmod.ibt.world.*;
 
@@ -8,7 +10,7 @@ public class Block
 {
 	public final int blockID;
 	public final String blockName;
-	public Texture blockTexture;
+	public Resource blockTexture;
 	public final boolean hasTile = (this instanceof ITileBlock);
 	private int lightValue = 0;
 	
@@ -19,6 +21,8 @@ public class Block
 		
 		blockMap.put(blockID, this);
 		blockNameMap.put(blockName, this);
+		
+		blockTexture = Resource.getTexture("blocks/" + blockName + ".png");
 	}
 	
 	public void setLightValue(float f)
@@ -27,19 +31,14 @@ public class Block
 	public int getLightValue(World w, int x, int y)
 	{ return lightValue; }
 	
-	public void reloadTextures()
-	{
-		blockTexture = Renderer.getTexture("blocks/" + blockName + ".png");
-	}
-	
 	public void onRender(World w, double x, double y)
 	{
 		Color.WHITE.set();
-		Renderer.setTexture(getTexture(w, x, y));
+		Main.inst.textureManager.setTexture(getTexture(w, x, y));
 		Renderer.rect(x, y, 1D, 1D);
 	}
 	
-	public Texture getTexture(World w, double x, double y)
+	public Resource getTexture(World w, double x, double y)
 	{ return blockTexture; }
 	
 	public boolean isVisible(World w, int x, int y)

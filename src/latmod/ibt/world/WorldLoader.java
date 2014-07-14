@@ -38,7 +38,7 @@ public class WorldLoader
 		w.backgroundTex = wl.background;
 		if(w.backgroundTex == null) w.backgroundTex = "";
 		
-		w.extraArgs = LatCore.createArgs(wl.extraArgs);
+		w.extraArgs = new MainArgs(wl.extraArgs);
 		
 		w.postInit();
 		

@@ -1,5 +1,6 @@
 package latmod.ibt.world;
 import latmod.core.rendering.*;
+import latmod.core.res.*;
 import latmod.core.util.*;
 import latmod.ibt.*;
 import latmod.ibt.blocks.*;
@@ -9,9 +10,9 @@ public class WorldRenderer
 {
 	public World worldObj;
 	
-	private Texture texBG;
-	private Texture texEndOn;
-	private Texture texEndOff;
+	private Resource texBG;
+	private Resource texEndOn;
+	private Resource texEndOff;
 	
 	public int[] lightMap;
 	public int lightMapListID = -1;
@@ -25,9 +26,9 @@ public class WorldRenderer
 	public void postInit()
 	{
 		lightMap = new int[worldObj.width * worldObj.height];
-		texBG = Renderer.getTexture(worldObj.backgroundTex);
-		texEndOn = Renderer.getTexture("world/endPoint_on.png");
-		texEndOff = Renderer.getTexture("world/endPoint_off.png");
+		texBG = Resource.getTexture(worldObj.backgroundTex);
+		texEndOn = Resource.getTexture("world/endPoint_on.png");
+		texEndOff = Resource.getTexture("world/endPoint_off.png");
 	}
 	
 	public void onRender()
@@ -36,7 +37,7 @@ public class WorldRenderer
 		
 		Renderer.enableTexture();
 		
-		Renderer.setTexture(texBG);
+		Main.inst.textureManager.setTexture(texBG);
 		Renderer.rect(0D, 0D, worldObj.width, worldObj.height, 0D, 0D, worldObj.width, worldObj.height);
 		
 		for(int i = 0; i < worldObj.blocks.size(); i++)
@@ -48,11 +49,11 @@ public class WorldRenderer
 			b.onRender(worldObj, worldObj.getX(c), worldObj.getY(c));
 		}
 		
-		Renderer.setTexture(worldObj.isPlayerAtEnd(worldObj.playerSP) ? texEndOn : texEndOff);
+		Main.inst.textureManager.setTexture(worldObj.isPlayerAtEnd(worldObj.playerSP) ? texEndOn : texEndOff);
 		worldObj.playerSP.color.set(255);
 		Renderer.rect(worldObj.getX(worldObj.endPointSP), worldObj.getY(worldObj.endPointSP), 1D, 1D);
 		
-		Renderer.setTexture(worldObj.isPlayerAtEnd(worldObj.playerMP) ? texEndOn : texEndOff);
+		Main.inst.textureManager.setTexture(worldObj.isPlayerAtEnd(worldObj.playerMP) ? texEndOn : texEndOff);
 		worldObj.playerMP.color.set(255);
 		Renderer.rect(worldObj.getX(worldObj.endPointMP), worldObj.getY(worldObj.endPointMP), 1D, 1D);
 		
@@ -81,7 +82,7 @@ public class WorldRenderer
 	
 	public void renderLighting()
 	{
-		if(worldObj.extraArgs.keys.contains("brightLight")) return;
+		if(worldObj.extraArgs.has("brightLight")) return;
 		
 		Renderer.disableTexture();
 		
@@ -93,7 +94,7 @@ public class WorldRenderer
 			lightMapDirty = false;
 			Renderer.updateList(lightMapListID);
 			
-			if(worldObj.extraArgs.keys.contains("darkLight"))
+			if(worldObj.extraArgs.has("darkLight"))
 			{
 				Color.BLACK.set(200);
 				Renderer.rect(0D, 0D, worldObj.width, worldObj.height);

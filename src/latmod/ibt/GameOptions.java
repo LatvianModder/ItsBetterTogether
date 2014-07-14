@@ -1,8 +1,11 @@
 package latmod.ibt;
 import java.io.*;
 import java.util.*;
+
 import org.lwjgl.input.*;
+
 import com.google.gson.annotations.Expose;
+
 import latmod.core.util.*;
 
 public class GameOptions
@@ -27,10 +30,10 @@ public class GameOptions
 	{
 		try
 		{
-			props = LatCore.getJson(LatCore.toString(new FileInputStream(LatCore.newFile("", "options.json"))), Props.class);
+			props = LatCore.getJson(LMCommon.toString(new FileInputStream(LatCore.newFile("", "options.json"))), Props.class);
 			props.setDefaults();
 			
-			keys = LatCore.getJson(LatCore.toString(new FileInputStream(LatCore.newFile("", "keys.json"))), HashMap.class);
+			keys = LatCore.getJson(LMCommon.toString(new FileInputStream(LatCore.newFile("", "keys.json"))), HashMap.class);
 			if(keys == null) keys = new HashMap<String, String>();
 			
 			keyBindings.clear();
@@ -74,13 +77,13 @@ public class GameOptions
 	{
 		if(props == null) return;
 		String s = LatCore.toJson(props, true);
-		LatCore.saveFile(LatCore.newFile("", "options.json"), s, false);
+		LMCommon.saveFile(LatCore.newFile("", "options.json"), s);
 	}
 	
 	public static void saveKeys()
 	{
 		if(keys == null) return;
 		String s = LatCore.toJson(keys, true);
-		LatCore.saveFile(LatCore.newFile("", "keys.json"), s, false);
+		LMCommon.saveFile(LatCore.newFile("", "keys.json"), s);
 	}
 }

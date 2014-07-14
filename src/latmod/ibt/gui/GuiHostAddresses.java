@@ -3,7 +3,7 @@ import latmod.core.gui.*;
 import latmod.core.rendering.Color;
 import latmod.core.rendering.Font;
 import latmod.core.util.FastList;
-import latmod.core.util.LatCore;
+import latmod.core.util.LMCommon;
 import latmod.ibt.*;
 
 public class GuiHostAddresses extends GuiBasic
@@ -16,8 +16,8 @@ public class GuiHostAddresses extends GuiBasic
 	{
 		super(Main.inst);
 		
-		localIP = LatCore.getHostAddress();
-		externalIP = LatCore.getExternalAddress();
+		localIP = LMCommon.getHostAddress();
+		externalIP = LMCommon.getExternalAddress();
 		addressText = new FastList<String>();
 		
 		if(externalIP != null)
