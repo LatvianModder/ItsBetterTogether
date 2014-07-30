@@ -1,6 +1,5 @@
 package latmod.ibt.gui;
 import latmod.core.gui.*;
-import latmod.core.rendering.*;
 import latmod.core.util.*;
 import latmod.ibt.*;
 import latmod.ibt.net.*;
@@ -34,7 +33,7 @@ public class GuiJoinWait extends GuiBasic
 		else if(client.connecting == EnumStatus.SUCCESS) s = "Loading world";
 		else if(client.connecting == EnumStatus.FAILED) s = "Connection failed";
 		
-		Font.inst.drawText(Font.inst.getCenterX(s, 2D), height / 3D, s, 2D);
+		parent.font.drawText(parent.font.getCenterX(s, 2D), height / 3D, s, 2D);
 	}
 	
 	public void onEscPressed() { }

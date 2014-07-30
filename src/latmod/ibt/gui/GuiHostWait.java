@@ -1,6 +1,6 @@
 package latmod.ibt.gui;
 import latmod.core.gui.*;
-import latmod.core.rendering.*;
+import latmod.core.res.Resource;
 import latmod.core.util.*;
 import latmod.ibt.*;
 import latmod.ibt.net.*;
@@ -13,7 +13,7 @@ public class GuiHostWait extends GuiBasic
 		super(Main.inst);
 		
 		World.inst = new WorldServer();
-		WorldLoader.loadWorldFromLocalStream(World.inst, "/levels/level1");
+		WorldLoader.loadWorld(World.inst, Main.inst.resManager, Resource.get("/levels/level1.json"), Resource.get("/levels/level1.png"));
 		World.inst.getNetServer().open(i, b);
 		
 		Main.logger.info("Hosted server @ port " + i + (b ? " with" : " without") + " router");
@@ -35,7 +35,7 @@ public class GuiHostWait extends GuiBasic
 		if(server.waitingClient == EnumStatus.SUCCESS) s = "Sending world";
 		if(server.waitingClient == EnumStatus.FAILED) s = "Sending world failed";
 		
-		Font.inst.drawText(Font.inst.getCenterX(s, 2D), height / 3D, s, 2D);
+		parent.font.drawText(parent.font.getCenterX(s, 2D), height / 3D, s, 2D);
 	}
 
 	public void loadWidgets()

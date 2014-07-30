@@ -6,7 +6,7 @@ import latmod.core.rendering.*;
 import latmod.core.util.*;
 import latmod.ibt.*;
 import latmod.ibt.gui.*;
-import latmod.ibt.net.PacketPlayerUpdate;
+import latmod.ibt.net.packets.PacketPlayerUpdate;
 import latmod.ibt.world.*;
 
 public class EntityPlayerSP extends EntityPlayer // Entity
@@ -39,7 +39,7 @@ public class EntityPlayerSP extends EntityPlayer // Entity
 		}
 		
 		for(int i = 0; i < txt.size(); i++)
-		Font.inst.drawText(4, 4 + i * 20, txt.get(i));
+			Main.inst.font.drawText(4, 4 + i * 20, txt.get(i));
 	}
 	
 	public void onRender()

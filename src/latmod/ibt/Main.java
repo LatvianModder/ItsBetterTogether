@@ -2,13 +2,16 @@ package latmod.ibt;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.logging.Logger;
+
 import org.lwjgl.input.*;
+
 import latmod.core.input.*;
 import latmod.core.rendering.*;
+import latmod.core.res.Resource;
 import latmod.core.util.*;
 import latmod.ibt.entity.*;
 import latmod.ibt.gui.*;
-import latmod.ibt.net.Packet;
+import latmod.ibt.net.packets.Packet;
 import latmod.ibt.tiles.TileRegistry;
 import latmod.ibt.world.*;
 
@@ -93,7 +96,13 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IMouseList
 				{ e.printStackTrace(); json = png = null; }
 			}
 			if(json != null && png != null)
-				hostGame(json, png, port, router);
+			{
+				World.inst = new WorldServer();
+				WorldLoader.loadWorld(World.inst, Main.inst.resManager, Resource.get("/levels/level1.json"), Resource.get("/levels/level1.png"));
+				World.inst.getNetServer().open(port, router);
+				
+				Main.logger.info("Hosted server @ port " + port + (router ? " with" : " without") + " router");
+			}
 		}
 		else if(args.has("join"))
 		{
@@ -221,20 +230,6 @@ public class Main extends LMFrame implements IMouseListener.Scrolled, IMouseList
 	
 	public GuiBasic getGui()
 	{ return openedGui; }
-	
-	public void hostGame(InputStream json, InputStream png, int port, boolean router)
-	{
-		World.inst = new WorldServer();
-		WorldLoader.loadWorldFromStream(World.inst, json, png);
-		openGui(null);
-	}
-	
-	public void hostGame(String json, int[] pixels, int port, boolean router)
-	{
-		World.inst = new WorldServer();
-		WorldLoader.loadWorldFromJson(World.inst, json, pixels);
-		openGui(null);
-	}
 	
 	public void closeGame()
 	{

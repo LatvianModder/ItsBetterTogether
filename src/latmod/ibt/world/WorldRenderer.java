@@ -50,11 +50,11 @@ public class WorldRenderer
 		}
 		
 		Main.inst.textureManager.setTexture(worldObj.isPlayerAtEnd(worldObj.playerSP) ? texEndOn : texEndOff);
-		worldObj.playerSP.color.set(255);
+		Color.set(worldObj.playerSP.color, 255);
 		Renderer.rect(worldObj.getX(worldObj.endPointSP), worldObj.getY(worldObj.endPointSP), 1D, 1D);
 		
 		Main.inst.textureManager.setTexture(worldObj.isPlayerAtEnd(worldObj.playerMP) ? texEndOn : texEndOff);
-		worldObj.playerMP.color.set(255);
+		Color.set(worldObj.playerMP.color, 255);
 		Renderer.rect(worldObj.getX(worldObj.endPointMP), worldObj.getY(worldObj.endPointMP), 1D, 1D);
 		
 		for(TileEntity te : worldObj.tiles)
@@ -96,7 +96,7 @@ public class WorldRenderer
 			
 			if(worldObj.extraArgs.has("darkLight"))
 			{
-				Color.BLACK.set(200);
+				Color.set(Color.BLACK, 200);
 				Renderer.rect(0D, 0D, worldObj.width, worldObj.height);
 			}
 			else
@@ -152,19 +152,19 @@ public class WorldRenderer
 					if(GameOptions.props.smoothLighting)
 					{
 						Renderer.beginQuads();
-						Color.BLACK.set(calcSmoothLight(x, y));
+						Color.set(Color.BLACK, calcSmoothLight(x, y));
 						Renderer.vertex(x, y);
-						Color.BLACK.set(calcSmoothLight(x + 1D, y));
+						Color.set(Color.BLACK, calcSmoothLight(x + 1D, y));
 						Renderer.vertex(x + 1D, y);
-						Color.BLACK.set(calcSmoothLight(x + 1D, y + 1D));
+						Color.set(Color.BLACK, calcSmoothLight(x + 1D, y + 1D));
 						Renderer.vertex(x + 1D, y + 1D);
-						Color.BLACK.set(calcSmoothLight(x, y + 1D));
+						Color.set(Color.BLACK, calcSmoothLight(x, y + 1D));
 						Renderer.vertex(x, y + 1D);
 						Renderer.end();
 					}
 					else
 					{
-						Color.BLACK.set((int)MathHelper.map(lightMap[i], 0D, 15D, 200D, 0D));
+						Color.set(Color.BLACK, (int)MathHelper.map(lightMap[i], 0D, 15D, 200D, 0D));
 						Renderer.rect(x, y, 1D, 1D);
 					}
 				}

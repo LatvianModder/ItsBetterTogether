@@ -25,7 +25,7 @@ public class TileDoor extends TileEntity
 		if(!isOpen)
 		{
 			texture.onRender(worldObj, posX, posY);
-			color.set();
+			Color.set(color);
 			Main.inst.textureManager.setTexture(type.blockTexture);
 			Renderer.rect(posX, posY, 1D, 1D);
 		}

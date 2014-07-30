@@ -1,4 +1,4 @@
-package latmod.ibt.net;
+package latmod.ibt.net.packets;
 import latmod.core.util.*;
 import latmod.ibt.tiles.*;
 import latmod.ibt.world.*;

@@ -6,6 +6,8 @@ import latmod.core.util.Timer;
 import latmod.ibt.blocks.*;
 import latmod.ibt.entity.*;
 import latmod.ibt.net.*;
+import latmod.ibt.net.packets.PacketHandler;
+import latmod.ibt.net.packets.PacketTileUpdate;
 import latmod.ibt.tiles.*;
 
 public abstract class World // WorldClient // WorldServer

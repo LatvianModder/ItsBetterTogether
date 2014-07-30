@@ -30,10 +30,10 @@ public class GameOptions
 	{
 		try
 		{
-			props = LatCore.getJson(LMCommon.toString(new FileInputStream(LatCore.newFile("", "options.json"))), Props.class);
+			props = LatCore.getJson(LMCommon.toString(new FileInputStream(LatCore.newFile("options.json"))), Props.class);
 			props.setDefaults();
 			
-			keys = LatCore.getJson(LMCommon.toString(new FileInputStream(LatCore.newFile("", "keys.json"))), HashMap.class);
+			keys = LatCore.getJson(LMCommon.toString(new FileInputStream(LatCore.newFile("keys.json"))), HashMap.class);
 			if(keys == null) keys = new HashMap<String, String>();
 			
 			keyBindings.clear();
@@ -77,13 +77,13 @@ public class GameOptions
 	{
 		if(props == null) return;
 		String s = LatCore.toJson(props, true);
-		LMCommon.saveFile(LatCore.newFile("", "options.json"), s);
+		LMCommon.saveFile(LatCore.newFile("options.json"), s);
 	}
 	
 	public static void saveKeys()
 	{
 		if(keys == null) return;
 		String s = LatCore.toJson(keys, true);
-		LMCommon.saveFile(LatCore.newFile("", "keys.json"), s);
+		LMCommon.saveFile(LatCore.newFile("keys.json"), s);
 	}
 }

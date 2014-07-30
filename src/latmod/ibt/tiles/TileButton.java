@@ -27,7 +27,7 @@ public class TileButton extends TileEntity implements IPowerProvider
 	
 	public void onRender()
 	{
-		color.set();
+		Color.set(color);
 		Main.inst.textureManager.setTexture(isPressed ? ((BlockButton)type).textureOn : type.blockTexture);
 		Renderer.rect(posX, posY, 1D, 1D);
 	}

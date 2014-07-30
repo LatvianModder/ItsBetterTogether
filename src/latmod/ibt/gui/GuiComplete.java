@@ -1,6 +1,5 @@
 package latmod.ibt.gui;
 import latmod.core.gui.Widget;
-import latmod.core.rendering.Font;
 import latmod.ibt.*;
 
 public class GuiComplete extends GuiBasic
@@ -13,7 +12,7 @@ public class GuiComplete extends GuiBasic
 	public void onRender()
 	{
 		String s = "You won!";
-		Font.inst.drawText(Font.inst.getCenterX(s, 2D), 64D, s, 2D);
+		parent.font.drawText(parent.font.getCenterX(s, 2D), 64D, s, 2D);
 		
 		super.onRender();
 	}

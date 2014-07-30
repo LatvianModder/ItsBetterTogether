@@ -31,7 +31,7 @@ public class WorldClient extends World
 		for(int i = 0; i < load_pixels.length; i++)
 			load_pixels[i] = dios.readInt();
 		
-		WorldLoader.loadWorldFromJson(this, load_json, load_pixels);
+		WorldLoader.loadWorld(this, load_json, load_pixels);
 		
 		playerMP.username = dios.readString();
 		playerMP.color = Color.get(dios.readInt());

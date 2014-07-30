@@ -33,7 +33,7 @@ public class Block
 	
 	public void onRender(World w, double x, double y)
 	{
-		Color.WHITE.set();
+		Color.reset();
 		Main.inst.textureManager.setTexture(getTexture(w, x, y));
 		Renderer.rect(x, y, 1D, 1D);
 	}

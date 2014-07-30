@@ -1,9 +1,7 @@
 package latmod.ibt.gui;
 import latmod.core.gui.*;
-import latmod.core.rendering.Color;
-import latmod.core.rendering.Font;
-import latmod.core.util.FastList;
-import latmod.core.util.LMCommon;
+import latmod.core.rendering.*;
+import latmod.core.util.*;
 import latmod.ibt.*;
 
 public class GuiHostAddresses extends GuiBasic
@@ -48,12 +46,12 @@ public class GuiHostAddresses extends GuiBasic
 	{
 		super.onRender();
 		
-		Color.WHITE.set();
+		Color.reset();
 		
 		for(int i = 0; i < addressText.size(); i++)
 		{
 			String s = addressText.get(i);
-			Font.inst.drawText(Font.inst.getCenterX(s, 2D), height / 3D + i * 40D, s, 2D);
+			parent.font.drawText(parent.font.getCenterX(s, 2D), height / 3D + i * 40D, s, 2D);
 		}
 	}
 }

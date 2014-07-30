@@ -1,12 +1,9 @@
 package latmod.ibt.world;
 import java.awt.image.BufferedImage;
-import java.io.*;
 import java.util.*;
-
 import javax.imageio.ImageIO;
-
-import latmod.core.rendering.Color;
-import latmod.core.rendering.Renderer;
+import latmod.core.rendering.*;
+import latmod.core.res.*;
 import latmod.core.util.*;
 import latmod.ibt.blocks.Block;
 
@@ -22,7 +19,19 @@ public class WorldLoader
 	@Expose public Map<String, BlockLoader> blocks;
 	@Expose public String[] extraArgs;
 	
-	public static boolean loadWorldFromJson(World w, String json, int[] pixels)
+	public static void loadWorld(World w, ResourceManager rm, Resource json, Resource png)
+	{
+		try
+		{
+			BufferedImage img = ImageIO.read(rm.getInputStream(png));
+			int[] pixels = Renderer.getPixels(img);
+			loadWorld(w, rm.readText(json), pixels);
+		}
+		catch(Exception e)
+		{ e.printStackTrace(); }
+	}
+	
+	public static boolean loadWorld(World w, String json, int[] pixels)
 	{
 		w.load_json = json;
 		w.load_pixels = pixels;
@@ -101,22 +110,4 @@ public class WorldLoader
 		if(i == null) return null;
 		return Color.get(i, 255).hex;
 	}
-	
-	public static void loadWorldFromStream(World w, InputStream json, InputStream png)
-	{
-		try
-		{
-			byte[] b = new byte[json.available()];
-			json.read(b);
-			
-			BufferedImage img = ImageIO.read(png);
-			int[] pixels = Renderer.getPixels(img);
-			loadWorldFromJson(w, new String(b), pixels);
-		}
-		catch(Exception e)
-		{ e.printStackTrace(); }
-	}
-	
-	public static void loadWorldFromLocalStream(World w, String s)
-	{ loadWorldFromStream(w, WorldLoader.class.getResourceAsStream(s + ".json"), WorldLoader.class.getResourceAsStream(s + ".png")); }
 }

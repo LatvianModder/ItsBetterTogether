@@ -1,5 +1,6 @@
-package latmod.ibt.net;
+package latmod.ibt.net.packets;
 import latmod.core.util.*;
+import latmod.ibt.net.NetClient;
 import latmod.ibt.world.*;
 
 public class PacketHandler
